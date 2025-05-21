@@ -4,7 +4,10 @@ import java.awt.*;
 
 public class GUI extends JFrame {
 
-    public GUI(String title) { super(title); }
+    public GUI(String title) {
+        super(title);
+        init();
+    }
 
     void init() {
         setSize(350, 200);

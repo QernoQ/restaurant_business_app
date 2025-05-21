@@ -14,6 +14,7 @@ public class RestaurantServer {
     public RestaurantServer() throws IOException {
         try {
             serverSocket = new ServerSocket(serverPort);
+            new ServerGUI("Server");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Socket could not be created!");
             System.exit(0);
@@ -24,12 +25,14 @@ public class RestaurantServer {
         while (true) {
             Socket socket = serverSocket.accept();
             DataBase dataBase = new DataBase(socket);
+            dataBase.start();
         }
     }
 
     public static void main(String[] args) throws IOException {
         RestaurantServer server = new RestaurantServer();
         server.work();
+        server.serverSocket.close();
     }
 
 }

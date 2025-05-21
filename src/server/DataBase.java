@@ -2,7 +2,7 @@ package server;
 
 import java.net.Socket;
 
-public class DataBase {
+public class DataBase extends Thread {
 
     private final Socket socket;
 

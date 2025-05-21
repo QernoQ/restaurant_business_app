@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class RestaurantClient {
+public class RestaurantClient  {
     public static final int serverPort = 8888;
     public static final String serverIP = "localhost";
     private Socket socket;

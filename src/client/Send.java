@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class Send extends Thread {
     private final Socket socket;
+    private PrintWriter out;
 
 
     public Send(Socket socket) {
@@ -17,10 +18,16 @@ public class Send extends Thread {
     @Override
     public void run() {
         try {
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
 
+    public void sendMessage(String message) {
+        if (out != null) {
+            out.println(message);
+        }
     }
 }

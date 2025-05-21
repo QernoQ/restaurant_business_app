@@ -3,6 +3,7 @@ package server;
 import com.sun.source.tree.WhileLoopTree;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -16,7 +17,7 @@ public class RestaurantServer {
             serverSocket = new ServerSocket(serverPort);
             new ServerGUI("Server");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Socket could not be created!");
+            JOptionPane.showMessageDialog(null, "Server already running!");
             System.exit(0);
         }
     }
@@ -24,8 +25,8 @@ public class RestaurantServer {
     void work() throws IOException {
         while (true) {
             Socket socket = serverSocket.accept();
-            DataBase dataBase = new DataBase(socket);
-            dataBase.start();
+            MenuHandler menuHandler = new MenuHandler(socket);
+            menuHandler.start();
         }
     }
 

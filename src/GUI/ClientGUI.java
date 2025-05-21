@@ -4,17 +4,30 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.net.Socket;
 
 public class ClientGUI extends BaseGUI implements ActionListener {
     private JButton loginButton;
     private JTextField loginTextField;
+    PrintWriter out;
+    BufferedReader in;
 
-    public ClientGUI(String title) {
+    private final Socket socket;
+
+    public ClientGUI(String title,Socket socket) {
         super(title);
+        this.socket = socket;
         init();
     }
 
     public void init() {
+        try {
+        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null,"ERROR");
+        }
         setSize(400, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -57,8 +70,8 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         loginPanel.add(loginTextField);
         loginPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         loginPanel.add(loginButton);
+        loginButton.addActionListener(this);
         loginPanel.add(Box.createVerticalGlue());
-
         loginContainer.add(loginPanel, BorderLayout.CENTER);
         setVisible(true);
     }
@@ -68,26 +81,16 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         Object source = e.getSource();
         String chooseMenu = loginTextField.getText().toLowerCase();
         if (source == loginButton) {
-            switch (chooseMenu) {
-                case "boss":
-                    new BossGUI("BossGUI");
-                    break;
-                case "manager":
-                    new ManagerGUI("ManagerGUI");
-                    break;
-                case "waiter":
-                    new WaiterGUI("WaiterGUI");
-                    break;
-                case "cook":
-                    new CookGUI("CookGUI");
-                    break;
-                default:
-                    JOptionPane.showMessageDialog(null, "Invalid login");
-                    break;
-
-
+            out.println(chooseMenu);
+            try {
+                if(in.readLine().equals("chosen"))
+                {
+                    dispose();
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null,"ERROR");
             }
-        }
 
+        }
     }
 }

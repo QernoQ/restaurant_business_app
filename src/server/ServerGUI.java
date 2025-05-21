@@ -1,10 +1,17 @@
 package server;
 
+import client.Send;
+
 import javax.swing.*;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ServerGUI extends JFrame {
     private JTextArea serverArea;
+
     public ServerGUI(String title) {
         super(title);
         init();

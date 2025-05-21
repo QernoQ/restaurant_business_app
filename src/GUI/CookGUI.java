@@ -1,5 +1,7 @@
 package GUI;
 
+import javax.swing.*;
+
 public class CookGUI extends BaseGUI {
     public CookGUI(String title) {
         super(title);
@@ -8,11 +10,13 @@ public class CookGUI extends BaseGUI {
 
     @Override
     protected void init() {
-        setSize(400, 200);
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
-        setVisible(true);
+        JFrame frame = new JFrame();
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+        frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        frame.setResizable(false);
+        frame.setVisible(true);
+        frame.setAlwaysOnTop(true);
 
     }
 }

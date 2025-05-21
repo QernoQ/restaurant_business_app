@@ -15,7 +15,7 @@ public class RestaurantClient  {
     {
         try {
             socket = new Socket(serverIP,serverPort);
-            new ClientGUI("Restaurant Management Application");
+            new ClientGUI("Restaurant Management Application",socket);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"Could not connect to server");
         }
@@ -32,6 +32,8 @@ public class RestaurantClient  {
         new Send(this.getSocket()).start();
     }
     public static void main(String[] args) {
-        new RestaurantClient();
+        RestaurantClient client = new RestaurantClient();
+        client.start();
+
     }
 }

@@ -1,16 +1,21 @@
-package client;
+package GUI;
+
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GUI extends JFrame {
+public class ClientGUI extends BaseGUI implements ActionListener {
+    private JButton loginButton;
+    private JTextField loginTextField;
 
-    public GUI(String title) {
+    public ClientGUI(String title) {
         super(title);
         init();
     }
 
-    void init() {
-        setSize(350, 200);
+    public void init() {
+        setSize(400, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -35,12 +40,12 @@ public class GUI extends JFrame {
         loginLabel.setForeground(Color.WHITE);
         loginLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JTextField loginField = new JTextField();
-        loginField.setMaximumSize(new Dimension(150, 25));
-        loginField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        loginTextField = new JTextField();
+        loginTextField.setMaximumSize(new Dimension(150, 25));
+        loginTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
-        JButton loginButton = new JButton("Enter");
+        loginButton = new JButton("Enter");
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         loginButton.setMaximumSize(new Dimension(100, 30));
 
@@ -49,7 +54,7 @@ public class GUI extends JFrame {
         loginPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         loginPanel.add(loginLabel);
         loginPanel.add(Box.createRigidArea(new Dimension(0, 10)));
-        loginPanel.add(loginField);
+        loginPanel.add(loginTextField);
         loginPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         loginPanel.add(loginButton);
         loginPanel.add(Box.createVerticalGlue());
@@ -58,4 +63,31 @@ public class GUI extends JFrame {
         setVisible(true);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+        String chooseMenu = loginTextField.getText().toLowerCase();
+        if (source == loginButton) {
+            switch (chooseMenu) {
+                case "boss":
+                    new BossGUI("BossGUI");
+                    break;
+                case "manager":
+                    new ManagerGUI("ManagerGUI");
+                    break;
+                case "waiter":
+                    new WaiterGUI("WaiterGUI");
+                    break;
+                case "cook":
+                    new CookGUI("CookGUI");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Invalid login");
+                    break;
+
+
+            }
+        }
+
+    }
 }

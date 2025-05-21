@@ -1,5 +1,7 @@
 package client;
 
+import GUI.ClientGUI;
+
 import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
@@ -17,6 +19,17 @@ public class RestaurantClient  {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"Could not connect to server");
         }
+    }
+    public Socket getSocket() {
+        return socket;
+    }
+    public void start()
+    {
+        if(this.getSocket() == null) {
+            JOptionPane.showMessageDialog(null, "Socket could not be created!");
+            return;
+        }
+        new Send(this.getSocket()).start();
     }
     public static void main(String[] args) {
         new RestaurantClient();

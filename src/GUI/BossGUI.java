@@ -1,5 +1,6 @@
 package GUI;
 
+import GUI.boss.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,7 +8,7 @@ import java.awt.event.ActionListener;
 import java.net.Socket;
 
 public class BossGUI extends BaseGUI implements ActionListener {
-    JButton AddWorker, RemoveWorker;
+    JButton AddWorker, ManageWorker;
 
     public BossGUI(String title, Socket socket) {
         super(title, socket);
@@ -35,19 +36,20 @@ public class BossGUI extends BaseGUI implements ActionListener {
         titlePanel.add(titleLabel, BorderLayout.CENTER);
 
         AddWorker = new JButton("Add Worker");
-        RemoveWorker = new JButton("Remove Worker");
+        ManageWorker = new JButton("Manage Workers");
 
         Font buttonFont = new Font("Serif", Font.BOLD, 18);
         AddWorker.setFont(buttonFont);
-        RemoveWorker.setFont(buttonFont);
+        ManageWorker.setFont(buttonFont);
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 35, 10, 35));
         buttonPanel.setBackground(Color.DARK_GRAY);
         buttonPanel.add(AddWorker);
-        buttonPanel.add(RemoveWorker);
+        buttonPanel.add(ManageWorker);
+        AddWorker.addActionListener(this);
+        ManageWorker.addActionListener(this);
 
-        // ---------- Add to Container ----------
         BossContainer.add(titlePanel, BorderLayout.NORTH);
         BossContainer.add(buttonPanel, BorderLayout.CENTER);
 
@@ -72,10 +74,11 @@ public class BossGUI extends BaseGUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == AddWorker) {
-            out.println("Worker Addded");
+            new AddWorkerWindow(this);
 
-        } else if (source == RemoveWorker) {
-            out.println("Worker Removed");
+        } else if (source == ManageWorker) {
+            new ManageWorkerWindow(this);
+
 
         }
     }

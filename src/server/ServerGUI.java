@@ -1,21 +1,21 @@
 package server;
 
-import client.Send;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.Socket;
 
 public class ServerGUI extends JFrame {
     private JTextArea serverArea;
+
+    PrintWriter in;
 
     public ServerGUI(String title) {
         super(title);
         init();
     }
+
     public void init() {
         setLocationRelativeTo(null);
         setSize(600, 400);
@@ -28,7 +28,12 @@ public class ServerGUI extends JFrame {
         JScrollPane js = new JScrollPane(serverArea);
         add(js, BorderLayout.CENTER);
         setVisible(true);
-
     }
 
+    public void displayMessage(String message) {
+
+
+        serverArea.append(message + "\n");
     }
+
+}

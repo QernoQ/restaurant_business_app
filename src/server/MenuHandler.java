@@ -1,56 +1,56 @@
 package server;
 
-import GUI.BossGUI;
-import GUI.CookGUI;
-import GUI.ManagerGUI;
-import GUI.WaiterGUI;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
 import java.net.Socket;
+import java.util.Locale;
 
 public class MenuHandler extends Thread {
     private final Socket socket;
 
+    private final ServerGUI serverGUI;
     BufferedReader in;
     PrintWriter out;
 
-    public MenuHandler(Socket Socket) {
+    public MenuHandler(Socket Socket,ServerGUI serverGUI) {
         this.socket = Socket;
+        this.serverGUI = serverGUI;
     }
 
     public void run() {
+        String chooseMenu;
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
-            String chooseMenu = in.readLine();
+            while (true) {
+                chooseMenu = in.readLine();
+                if (chooseMenu == null) {
+                    break;
+                }
             switch (chooseMenu) {
                 case "boss":
-                    out.println("Boss Menu has been opened!");
-                    out.println("chosen");
-                    new BossGUI("BossGUI");
-                    break;
+                    out.println("boss");
+                    serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected!");
+                    return;
                 case "manager":
-                    out.println("Manager Menu has been opened!");
-                    out.println("chosen");
-                    new ManagerGUI("ManagerGUI");
-                    break;
+                    out.println("manager");
+                    serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected!");
+                    return;
                 case "waiter":
-                    out.println("Waiter Menu has been opened!");
-                    out.println("chosen");
-                    new WaiterGUI("WaiterGUI");
-                    break;
+                    out.println("waiter");
+                    serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected!");
+                    return;
                 case "cook":
-                    out.println("Cook Menu has been opened!");
-                    out.println("chosen");
-                    new CookGUI("CookGUI");
-                    break;
+                    out.println("cook");
+                    serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected!");
+                    return;
                 default:
-                    JOptionPane.showMessageDialog(null, "Invalid login: " + chooseMenu);
-                    out.println("chooen");
+                    out.println("invalidLogin");
+                    serverGUI.displayMessage("Invalid login!");
                     break;
             }
+        }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Error reading input: " + e.getMessage());
         }

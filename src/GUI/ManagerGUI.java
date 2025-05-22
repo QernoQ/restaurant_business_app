@@ -1,8 +1,10 @@
 package GUI;
 
+import java.net.Socket;
+
 public class ManagerGUI extends BaseGUI {
-    public ManagerGUI(String title) {
-        super(title);
+    public ManagerGUI(String title, Socket socket) {
+        super(title,socket);
         init();
     }
 
@@ -13,6 +15,11 @@ public class ManagerGUI extends BaseGUI {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+
+    }
+
+    @Override
+    protected void close() {
 
     }
 }

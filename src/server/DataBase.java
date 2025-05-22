@@ -20,6 +20,9 @@ public class DataBase extends Thread {
         try {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            while (true) {
+                String write = in.readLine();
+            }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e);
         }

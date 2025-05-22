@@ -1,8 +1,10 @@
 package GUI;
 
+import java.net.Socket;
+
 public class WaiterGUI extends BaseGUI {
-    public WaiterGUI(String title) {
-        super(title);
+    public WaiterGUI(String title, Socket socket) {
+        super(title,socket);
         init();
     }
 
@@ -13,6 +15,11 @@ public class WaiterGUI extends BaseGUI {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
         setVisible(true);
+
+    }
+
+    @Override
+    protected void close() {
 
     }
 }

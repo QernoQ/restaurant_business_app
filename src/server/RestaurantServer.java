@@ -11,11 +11,13 @@ import java.net.Socket;
 public class RestaurantServer {
     public static final int serverPort = 8888;
     private ServerSocket serverSocket;
+    private ServerGUI serverGUI;
 
     public RestaurantServer() throws IOException {
         try {
             serverSocket = new ServerSocket(serverPort);
-            new ServerGUI("Server");
+            serverGUI = new ServerGUI("Server");
+            serverGUI.displayMessage("Server started");
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Server already running!");
             System.exit(0);
@@ -25,7 +27,7 @@ public class RestaurantServer {
     void work() throws IOException {
         while (true) {
             Socket socket = serverSocket.accept();
-            MenuHandler menuHandler = new MenuHandler(socket);
+            MenuHandler menuHandler = new MenuHandler(socket,serverGUI);
             menuHandler.start();
         }
     }

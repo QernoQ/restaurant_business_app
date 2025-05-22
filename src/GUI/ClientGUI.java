@@ -10,24 +10,12 @@ import java.net.Socket;
 public class ClientGUI extends BaseGUI implements ActionListener {
     private JButton loginButton;
     private JTextField loginTextField;
-    PrintWriter out;
-    BufferedReader in;
-
-    private final Socket socket;
-
     public ClientGUI(String title,Socket socket) {
-        super(title);
-        this.socket = socket;
+        super(title,socket);
         init();
     }
 
     public void init() {
-        try {
-        PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()),true);
-        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,"ERROR");
-        }
         setSize(400, 200);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -77,15 +65,34 @@ public class ClientGUI extends BaseGUI implements ActionListener {
     }
 
     @Override
+    protected void close() {
+
+    }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         String chooseMenu = loginTextField.getText().toLowerCase();
         if (source == loginButton) {
             out.println(chooseMenu);
             try {
-                if(in.readLine().equals("chosen"))
+                String temp = in.readLine();
+                if(temp.equals("boss"))
                 {
                     dispose();
+                    new BossGUI("Boss Menu", socket);
+                } else if (temp.equals("manager")) {
+                    dispose();
+                    new ManagerGUI("Manager Menu",socket);
+                } else if (temp.equals("cook")) {
+                    dispose();
+                    new CookGUI("Cook Menu",socket);
+                } else if (temp.equals("waiter")) {
+                    dispose();
+                    new WaiterGUI("Waiter Menu",socket);
+                } else if (temp.equals("invalidLogin"))
+                {
+                    JOptionPane.showMessageDialog(null,"Invalid login");
                 }
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null,"ERROR");

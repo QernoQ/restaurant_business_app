@@ -1,5 +1,6 @@
 package client;
 
+import GUI.BossGUI;
 import GUI.ClientGUI;
 
 import javax.swing.*;
@@ -25,6 +26,7 @@ public class RestaurantClient  {
     }
     public void start()
     {
+
         if(this.getSocket() == null) {
             JOptionPane.showMessageDialog(null, "Socket could not be created!");
             return;

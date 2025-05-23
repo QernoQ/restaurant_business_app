@@ -1,6 +1,5 @@
 package server;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 
@@ -28,7 +27,7 @@ public class MenuHandler extends BaseHandler {
                     case "cook":
                         out.println(chooseMenu);
                         serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected by : " + socket.getInetAddress().getHostAddress());
-                        new PositionHandler(socket, serverGUI).start();
+                        new PersonHandler(socket, serverGUI).start();
                         return;
                     default:
                         out.println("invalidLogin");

@@ -66,6 +66,13 @@ public class BossGUI extends BaseGUI implements ActionListener {
             new AddWorkerWindow(this,objectOut);
 
         } else if (source == ManageWorker) {
+            try {
+                objectOut.writeObject("EDIT");
+                objectOut.flush();
+            new ManageWorkerWindow(this);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
             new ManageWorkerWindow(this);
 
 

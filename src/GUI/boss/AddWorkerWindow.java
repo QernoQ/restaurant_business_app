@@ -81,9 +81,11 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                     case Cook -> new Cook(name, surname, age, id, PositionEnum.Cook);
                     case Waiter -> new Waiter(name, surname, age, id, PositionEnum.Waiter);
                 };
+               objectOut.writeObject("ADD");
+               objectOut.flush();
                objectOut.writeObject(worker);
                objectOut.flush();
-                dispose();
+               dispose();
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");

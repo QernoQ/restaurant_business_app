@@ -23,7 +23,7 @@ public class ServerGUI extends JFrame {
         setLayout(new BorderLayout());
         serverArea = new JTextArea();
         serverArea.setEditable(false);
-        serverArea.setFocusable(false);
+        serverArea.setFocusable(true);
         add(serverArea, BorderLayout.CENTER);
         JScrollPane js = new JScrollPane(serverArea);
         add(js, BorderLayout.CENTER);
@@ -31,8 +31,6 @@ public class ServerGUI extends JFrame {
     }
 
     public void displayMessage(String message) {
-
-
         serverArea.append(message + "\n");
     }
 

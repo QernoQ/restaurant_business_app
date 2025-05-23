@@ -1,8 +1,10 @@
 package GUI.boss;
 
 import javax.swing.*;
+import java.io.ObjectOutputStream;
 
 public class ManageWorkerWindow extends JDialog {
+
 
     public ManageWorkerWindow(JFrame parent) {
         super(parent, "Add Worker", true);

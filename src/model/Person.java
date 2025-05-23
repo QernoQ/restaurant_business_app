@@ -1,19 +1,26 @@
 package model;
 
-public class Person {
+import javax.swing.text.Position;
+import java.io.Serializable;
+
+public class Person implements Serializable {
     protected String name;
     protected String surname;
     protected int age;
 
     protected int id;
+    PositionEnum position;
 
-    protected int access; // idk czy sie przyda
-
-    public Person(String name, String surname, int age, int id, int access) {
+    public Person(String name, String surname, int age, int id, PositionEnum position ) {
         this.name = name;
         this.surname = surname;
         this.age = age;
         this.id = id;
-        this.access = access;
+        this.position = position;
+    }
+
+    @Override
+    public String toString() {
+        return "Name: " + name + " Surname: " + surname + " Age: " + age + " ID: " + id;
     }
 }

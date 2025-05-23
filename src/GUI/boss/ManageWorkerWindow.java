@@ -1,11 +1,10 @@
 package GUI.boss;
 
 import javax.swing.*;
-import java.awt.*;
 
-public class AddWorkerWindow extends JDialog {
+public class ManageWorkerWindow extends JDialog {
 
-    public AddWorkerWindow(JFrame parent) {
+    public ManageWorkerWindow(JFrame parent) {
         super(parent, "Add Worker", true);
         setSize(800, 400);
         setLocationRelativeTo(parent);
@@ -37,11 +36,11 @@ public class AddWorkerWindow extends JDialog {
         add(ageField);
 
         JButton editButton = new JButton("Edit");
-        editButton.setBounds(280, 220, 100, 40);
+        editButton.setBounds(240, 220, 100, 40);
         add(editButton);
 
         JButton removeButton = new JButton("Remove");
-        removeButton.setBounds(420, 220, 100, 40);
+        removeButton.setBounds(380, 220, 100, 40);
         add(removeButton);
 
         setVisible(true);

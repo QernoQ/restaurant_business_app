@@ -1,5 +1,8 @@
 package server;
 
-public class SaveToFile {
+import java.io.Serializable;
+
+public class SaveToFile implements Serializable {
+
 
 }

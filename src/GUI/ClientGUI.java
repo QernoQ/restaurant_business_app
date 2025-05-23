@@ -10,8 +10,9 @@ import java.net.Socket;
 public class ClientGUI extends BaseGUI implements ActionListener {
     private JButton loginButton;
     private JTextField loginTextField;
-    public ClientGUI(String title,Socket socket) {
-        super(title,socket);
+
+    public ClientGUI(String title, Socket socket) {
+        super(title, socket);
         init();
     }
 
@@ -77,25 +78,34 @@ public class ClientGUI extends BaseGUI implements ActionListener {
             out.println(chooseMenu);
             try {
                 String temp = in.readLine();
-                if(temp.equals("boss"))
-                {
-                    dispose();
-                    new BossGUI("Boss Menu", socket);
-                } else if (temp.equals("manager")) {
-                    dispose();
-                    new ManagerGUI("Manager Menu",socket);
-                } else if (temp.equals("cook")) {
-                    dispose();
-                    new CookGUI("Cook Menu",socket);
-                } else if (temp.equals("waiter")) {
-                    dispose();
-                    new WaiterGUI("Waiter Menu",socket);
-                } else if (temp.equals("invalidLogin"))
-                {
-                    JOptionPane.showMessageDialog(null,"Invalid login");
+                if (temp != null) {
+                    switch (temp) {
+                        case "boss":
+                            dispose();
+                            new BossGUI("Boss Menu", socket);
+                            break;
+                        case "manager":
+                            dispose();
+                            new ManagerGUI("Manager Menu", socket);
+                            break;
+                        case "cook":
+                            dispose();
+                            new CookGUI("Cook Menu", socket);
+                            break;
+                        case "waiter":
+                            dispose();
+                            new WaiterGUI("Waiter Menu", socket);
+                            break;
+                        case "invalidLogin":
+                            JOptionPane.showMessageDialog(null, "Invalid login");
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "Unknown role: " + temp);
+                            break;
+                    }
                 }
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null,"ERROR");
+                JOptionPane.showMessageDialog(null, "ERROR");
             }
 
         }

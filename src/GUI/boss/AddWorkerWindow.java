@@ -1,12 +1,26 @@
 package GUI.boss;
 
+import model.*;
+
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Objects;
 
-public class AddWorkerWindow extends JDialog {
+public class AddWorkerWindow extends JDialog implements ActionListener {
+    JButton addButton;
+    JTextField nameField, surnameField, ageField;
+    JComboBox<PositionEnum> positionCombo;
 
-    public AddWorkerWindow(JFrame parent) {
+    static int id = 0;
+    private ObjectOutputStream objectOut;
+
+
+    public AddWorkerWindow(JFrame parent,ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
+        this.objectOut = objectOut;
         setSize(800, 400);
         setLocationRelativeTo(parent);
         setLayout(null);
@@ -24,26 +38,60 @@ public class AddWorkerWindow extends JDialog {
         ageLabel.setBounds(100, 150, 120, 30);
         add(ageLabel);
 
-        JTextField nameField = new JTextField();
+        nameField = new JTextField();
         nameField.setBounds(240, 50, 420, 30);
         add(nameField);
 
-        JTextField surnameField = new JTextField();
+        surnameField = new JTextField();
         surnameField.setBounds(240, 100, 420, 30);
         add(surnameField);
 
-        JTextField ageField = new JTextField();
+        ageField = new JTextField();
         ageField.setBounds(240, 150, 420, 30);
         add(ageField);
 
-        JButton editButton = new JButton("Edit");
-        editButton.setBounds(280, 220, 100, 40);
-        add(editButton);
+        addButton = new JButton("Add");
+        addButton.setBounds(240, 240, 100, 40);
+        add(addButton);
+        addButton.addActionListener(this);
 
-        JButton removeButton = new JButton("Remove");
-        removeButton.setBounds(420, 220, 100, 40);
-        add(removeButton);
+        JLabel positionLabel = new JLabel("Position:");
+        positionLabel.setBounds(100, 200, 120, 30);
+        PositionEnum[] positions = PositionEnum.values();
+        positionCombo = new JComboBox<>(positions);
+        positionCombo.setBounds(240, 200, 420, 30);
+        add(positionLabel);
+        add(positionCombo);
 
         setVisible(true);
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton) {
+            try {
+                String name = nameField.getText();
+                String surname = surnameField.getText();
+                int age = Integer.parseInt(ageField.getText());
+                PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
+
+               Object worker = switch (Objects.requireNonNull(position)) {
+                    case Boss -> new Boss(name, surname, age, id, PositionEnum.Boss);
+                    case Manager -> new Manager(name, surname, age, id, PositionEnum.Manager);
+                    case Cook -> new Cook(name, surname, age, id, PositionEnum.Cook);
+                    case Waiter -> new Waiter(name, surname, age, id, PositionEnum.Waiter);
+                };
+               objectOut.writeObject(worker);
+               objectOut.flush();
+                id++;
+                dispose();
+
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Something went wrong: " + ex.getMessage());
+            }
+        }
+    }
 }
+

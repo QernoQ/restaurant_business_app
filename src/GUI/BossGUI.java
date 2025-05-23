@@ -5,13 +5,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class BossGUI extends BaseGUI implements ActionListener {
     JButton AddWorker, ManageWorker;
+    protected ObjectOutputStream objectOut;
 
-    public BossGUI(String title, Socket socket) {
+    public BossGUI(String title, Socket socket) throws IOException {
         super(title, socket);
+        this.objectOut = new ObjectOutputStream(socket.getOutputStream());
         init();
     }
 
@@ -74,7 +78,7 @@ public class BossGUI extends BaseGUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == AddWorker) {
-            new AddWorkerWindow(this);
+            new AddWorkerWindow(this,objectOut);
 
         } else if (source == ManageWorker) {
             new ManageWorkerWindow(this);

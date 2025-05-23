@@ -11,17 +11,14 @@ import java.util.ArrayList;
 public class PositionHandler extends BaseHandler {
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
-    ArrayList<Boss> bossList = new ArrayList<>();
-    ArrayList<Manager> managerList = new ArrayList<>();
-    ArrayList<Cook> cookList = new ArrayList<>();
-    ArrayList<Waiter> waiterList = new ArrayList<>();
-
+    private SaveToFile saveToFile;
 
     public PositionHandler(Socket socket,ServerGUI serverGUI) {
         super(socket, serverGUI);
         try {
             this.objectOut = new ObjectOutputStream(socket.getOutputStream());
             this.objectIn = new ObjectInputStream(socket.getInputStream());
+            saveToFile = new SaveToFile(socket,serverGUI);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -32,17 +29,13 @@ public class PositionHandler extends BaseHandler {
             while (true) {
                 Object obj = objectIn.readObject();
                 if (obj instanceof Boss) {
-                    bossList.add((Boss) obj);
-                    serverGUI.displayMessage("Added Boss to system: " + obj.toString());
+                    saveToFile.saveObjectToFile((Boss) obj);
                 } else if (obj instanceof Manager) {
-                    managerList.add((Manager) obj);
-                    serverGUI.displayMessage("Added Manager to system: " + obj.toString());
+                    saveToFile.saveObjectToFile((Manager) obj);
                 } else if (obj instanceof Cook) {
-                    cookList.add((Cook) obj);
-                    serverGUI.displayMessage("Added Cook to system: " + obj.toString());
+                    saveToFile.saveObjectToFile((Cook) obj);
                 } else if (obj instanceof Waiter) {
-                    waiterList.add((Waiter) obj);
-                    serverGUI.displayMessage("Added Waiter to system: " + obj.toString());
+                    saveToFile.saveObjectToFile((Waiter) obj);
                 } else {
                     serverGUI.displayMessage("Unknown object received!");
                 }

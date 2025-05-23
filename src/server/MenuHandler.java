@@ -27,7 +27,7 @@ public class MenuHandler extends BaseHandler {
                     case "waiter":
                     case "cook":
                         out.println(chooseMenu);
-                        serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected!");
+                        serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected by : " + socket.getInetAddress().getHostAddress());
                         new PositionHandler(socket,serverGUI).start();
                         return;
                     default:

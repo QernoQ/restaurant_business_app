@@ -1,8 +1,14 @@
 package server;
 
+import model.Boss;
+
 import java.io.Serializable;
+import java.util.ArrayList;
 
-public class SaveToFile implements Serializable {
+public class SaveObjectToFile implements Serializable {
 
 
+    public SaveObjectToFile() {
+
+    }
 }

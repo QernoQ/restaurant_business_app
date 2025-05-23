@@ -3,9 +3,10 @@ package GUI.boss;
 import javax.swing.*;
 import java.awt.*;
 
-public class ManageWorkerWindow extends JDialog {
-    public ManageWorkerWindow(JFrame parent) {
-        super(parent, "Manage Workers", true);
+public class AddWorkerWindow extends JDialog {
+
+    public AddWorkerWindow(JFrame parent) {
+        super(parent, "Add Worker", true);
         setSize(800, 400);
         setLocationRelativeTo(parent);
         setLayout(null);

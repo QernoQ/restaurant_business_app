@@ -13,7 +13,13 @@ public class SaveToFile implements Serializable {
         this.socket = socket;
         this.serverGui = serverGui;
     }
-
+    public void saveLog(String message) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("logs.txt"))) {
+            writer.write(message);
+    } catch (IOException e) {
+            serverGui.displayMessage("Error saving log");
+        }
+    }
     public void saveID(String newID) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("id.txt"))) {
             writer.write(newID);

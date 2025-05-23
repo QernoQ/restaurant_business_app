@@ -11,10 +11,12 @@ import java.net.Socket;
 public class BossGUI extends BaseGUI implements ActionListener {
     JButton AddWorker, ManageWorker;
     protected ObjectOutputStream objectOut;
+    protected ObjectInputStream objectIn;
 
     public BossGUI(String title, Socket socket) throws IOException {
         super(title, socket);
         this.objectOut = new ObjectOutputStream(socket.getOutputStream());
+        this.objectIn = new ObjectInputStream(socket.getInputStream());
         init();
     }
 
@@ -66,16 +68,7 @@ public class BossGUI extends BaseGUI implements ActionListener {
             new AddWorkerWindow(this,objectOut);
 
         } else if (source == ManageWorker) {
-            try {
-                objectOut.writeObject("EDIT");
-                objectOut.flush();
-            new ManageWorkerWindow(this);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, ex.getMessage());
-            }
-            new ManageWorkerWindow(this);
-
-
+            new ManageWorkerWindow(this,objectOut,objectIn);
         }
     }
 }

@@ -31,7 +31,6 @@ public class RestaurantClient  {
             JOptionPane.showMessageDialog(null, "Socket could not be created!");
             return;
         }
-        new Send(this.getSocket()).start();
     }
     public static void main(String[] args) {
         RestaurantClient client = new RestaurantClient();

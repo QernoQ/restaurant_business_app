@@ -32,6 +32,7 @@ public class ServerGUI extends JFrame {
 
     public void displayMessage(String message) {
         serverArea.append(message + "\n");
+
     }
 
 }

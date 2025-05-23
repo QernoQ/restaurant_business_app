@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ReadFromFile {
+public class ReadFromFile implements Serializable {
     private final Socket socket;
     private final ServerGUI serverGui;
 

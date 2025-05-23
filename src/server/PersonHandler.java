@@ -1,6 +1,5 @@
 package server;
 
-
 import model.*;
 
 import java.io.*;
@@ -18,12 +17,10 @@ public class PersonHandler extends BaseHandler {
         try {
             this.objectOut = new ObjectOutputStream(socket.getOutputStream());
             this.objectIn = new ObjectInputStream(socket.getInputStream());
-            saveToFile = new SaveToFile(socket, serverGUI);
-            readFromFile = new ReadFromFile(socket, serverGUI);
-
-
+            this.saveToFile = new SaveToFile(socket, serverGUI);
+            this.readFromFile = new ReadFromFile(socket, serverGUI);
         } catch (IOException e) {
-            serverGUI.displayMessage("[POSITION HANDLER] " + e.getMessage());
+            serverGUI.displayMessage("[PERSON HANDLER] " + e.getMessage());
         }
     }
 
@@ -32,12 +29,10 @@ public class PersonHandler extends BaseHandler {
             while (true) {
                 Object msg = objectIn.readObject();
 
-                if (!(msg instanceof String)) {
+                if (!(msg instanceof String sort)) {
                     serverGUI.displayMessage("[PERSON HANDLER] Invalid sort type received.");
                     continue;
                 }
-
-                String sort = (String) msg;
 
                 if (sort.equals("ADD")) {
                     Object obj = objectIn.readObject();
@@ -54,28 +49,42 @@ public class PersonHandler extends BaseHandler {
                     ((Person) obj).setID(newID);
                     saveToFile.saveObjectToFile(obj);
                     saveToFile.saveID(String.valueOf(newID + 1));
+                    continue;
+                }
 
-                    serverGUI.displayMessage("[PERSON HANDLER] Added person: " + obj);
+                ArrayList<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
+                ArrayList<Boss> bosses = new ArrayList<>();
+                ArrayList<Manager> managers = new ArrayList<>();
+                ArrayList<Cook> cooks = new ArrayList<>();
+                ArrayList<Waiter> waiters = new ArrayList<>();
 
-                } else if (sort.equals("EDIT")) {
-                    ArrayList<Person> temp = readFromFile.readObjectsFromFile("Workers.ser");
+                for (Person p : allPersons) {
+                    if (p instanceof Boss b) bosses.add(b);
+                    else if (p instanceof Manager m) managers.add(m);
+                    else if (p instanceof Cook c) cooks.add(c);
+                    else if (p instanceof Waiter w) waiters.add(w);
+                }
+
+                switch (sort) {
+                    case "BOSS" -> objectOut.writeObject(bosses);
+                    case "MANAGER" -> objectOut.writeObject(managers);
+                    case "COOK" -> objectOut.writeObject(cooks);
+                    case "WAITER" -> objectOut.writeObject(waiters);
+                    default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
             }
-
         } catch (IOException e) {
-            serverGUI.displayMessage("[POSITION HANDLER] Client disconnected: " + socket.getRemoteSocketAddress());
+            serverGUI.displayMessage("[PERSON HANDLER] Client disconnected: " + socket.getRemoteSocketAddress());
         } catch (ClassNotFoundException e) {
-            serverGUI.displayMessage("[POSITION HANDLER] Unknown object type received from client " + socket.getRemoteSocketAddress());
+            serverGUI.displayMessage("[PERSON HANDLER] Unknown object type received from client " + socket.getRemoteSocketAddress());
         } finally {
             try {
                 if (objectIn != null) objectIn.close();
                 if (objectOut != null) objectOut.close();
                 if (!socket.isClosed()) socket.close();
             } catch (IOException e) {
-                serverGUI.displayMessage("[POSITION HANDLER] Error closing resources: " + e.getMessage());
+                serverGUI.displayMessage("[PERSON HANDLER] Error closing resources: " + e.getMessage());
             }
         }
     }
 }
-
-

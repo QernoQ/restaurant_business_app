@@ -22,6 +22,26 @@ public class Person implements Serializable {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public PositionEnum getPosition() {
+        return position;
+    }
+
     @Override
     public String toString() {
         return "Name: " + name + " Surname: " + surname + " Age: " + age + " ID: " + id + " Position: " + position;

@@ -21,9 +21,5 @@ public abstract class BaseGUI extends JFrame {
     }
     protected abstract void init();
 
-    protected abstract void close();
-
-
-
 
 }

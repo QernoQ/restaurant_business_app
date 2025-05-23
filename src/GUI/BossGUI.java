@@ -5,8 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 
 public class BossGUI extends BaseGUI implements ActionListener {
@@ -27,7 +26,6 @@ public class BossGUI extends BaseGUI implements ActionListener {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-        close();
 
         JLabel titleLabel = new JLabel("Boss Menu");
         titleLabel.setFont(new Font("Serif", Font.BOLD, 32));
@@ -60,19 +58,6 @@ public class BossGUI extends BaseGUI implements ActionListener {
         setVisible(true);
     }
 
-
-    protected void close() {
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosing(java.awt.event.WindowEvent e) {
-                if (out != null) {
-                    out.println(getTitle() + " Disconnected from server");
-                }
-                dispose();
-                System.exit(0);
-            }
-        });
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

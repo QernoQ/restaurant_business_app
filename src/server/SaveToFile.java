@@ -14,12 +14,23 @@ public class SaveToFile implements Serializable {
         this.serverGui = serverGUI;
     }
 
+    public void saveID(String newID)
+    {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("id.txt"))) {
+            writer.write(newID);
+        } catch (FileNotFoundException e) {
+            serverGui.displayMessage("[SAVETOFILE] Cannot create or open file id.txt");
+        } catch (IOException e) {
+            serverGui.displayMessage("[SAVETOFILE] ERROR");
+        }
+    }
+
     public void saveObjectToFile(Object worker) {
         try (ObjectOutputStream saveObject = new ObjectOutputStream(new FileOutputStream("Workers.ser",true))){
             saveObject.writeObject(worker);
             serverGui.displayMessage("Successfully saved to file: " + worker.toString());
         } catch(IOException e){
-            serverGui.displayMessage("Error saving object: " + e.toString());
+            serverGui.displayMessage("[SAVETOFILE] Error saving object: " + e.toString());
         }
 
     }

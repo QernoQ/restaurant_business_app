@@ -65,10 +65,6 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         setVisible(true);
     }
 
-    @Override
-    protected void close() {
-
-    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

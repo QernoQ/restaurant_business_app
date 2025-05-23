@@ -18,8 +18,4 @@ public class ManagerGUI extends BaseGUI {
 
     }
 
-    @Override
-    protected void close() {
-
-    }
 }

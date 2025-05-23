@@ -12,22 +12,32 @@ public class PositionHandler extends BaseHandler {
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
     private SaveToFile saveToFile;
+    private ReadFromFile readFromFile;
 
-    public PositionHandler(Socket socket,ServerGUI serverGUI) {
+    public PositionHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
         try {
             this.objectOut = new ObjectOutputStream(socket.getOutputStream());
             this.objectIn = new ObjectInputStream(socket.getInputStream());
-            saveToFile = new SaveToFile(socket,serverGUI);
+            saveToFile = new SaveToFile(socket, serverGUI);
+            readFromFile = new ReadFromFile(socket, serverGUI);
+
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage());
+            serverGUI.displayMessage("[POSITION HANDLER] " + e.getMessage());
         }
     }
 
-        public void run() {
+    public void run() {
         try {
             while (true) {
                 Object obj = objectIn.readObject();
+                String temp = readFromFile.readID();
+                int newID = Integer.parseInt(temp);
+                objectOut.writeObject(temp);
+                if (obj instanceof Person) {
+                    ((Person) obj).setID(newID);
+                }
                 if (obj instanceof Boss) {
                     saveToFile.saveObjectToFile((Boss) obj);
                 } else if (obj instanceof Manager) {
@@ -39,13 +49,29 @@ public class PositionHandler extends BaseHandler {
                 } else {
                     serverGUI.displayMessage("Unknown object received!");
                 }
+                saveToFile.saveID(String.valueOf(newID + 1));
             }
 
-        } catch (IOException | ClassNotFoundException e) {
-            serverGUI.displayMessage(e.getMessage());
+        } catch (IOException e) {
+            serverGUI.displayMessage("[POSITION HANDLER] Client disconnected: " + socket.getRemoteSocketAddress());
+        } catch (ClassNotFoundException e) {
+            serverGUI.displayMessage("[POSITION HANDLER] Unknown object type received from client " + socket.getRemoteSocketAddress());
+        } finally {
+            try {
+                if (objectIn != null) {
+                    objectIn.close();
+                }
+                if (objectOut != null) {
+                    objectOut.close();
+                }
+                if (!socket.isClosed()) {
+                    socket.close();
+                }
+            } catch (IOException e) {
+                serverGUI.displayMessage("[POSITION HANDLER] Error closing resources: " + e.getMessage());
             }
-
-
         }
+
     }
+}
 

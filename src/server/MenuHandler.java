@@ -28,7 +28,7 @@ public class MenuHandler extends BaseHandler {
                     case "cook":
                         out.println(chooseMenu);
                         serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected by : " + socket.getInetAddress().getHostAddress());
-                        new PositionHandler(socket,serverGUI).start();
+                        new PositionHandler(socket, serverGUI).start();
                         return;
                     default:
                         out.println("invalidLogin");
@@ -38,7 +38,8 @@ public class MenuHandler extends BaseHandler {
             }
 
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null, "Error reading input: " + e.getMessage());
+            serverGUI.displayMessage("[MENU HANDLER] " + e.getMessage());
         }
     }
 }
+

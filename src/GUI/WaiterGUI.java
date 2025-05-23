@@ -18,8 +18,4 @@ public class WaiterGUI extends BaseGUI {
 
     }
 
-    @Override
-    protected void close() {
-
-    }
 }

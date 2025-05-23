@@ -5,8 +5,10 @@ import model.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.util.Objects;
 
 public class AddWorkerWindow extends JDialog implements ActionListener {
@@ -14,9 +16,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     JTextField nameField, surnameField, ageField;
     JComboBox<PositionEnum> positionCombo;
 
-    static int id = 0;
     private ObjectOutputStream objectOut;
-
 
     public AddWorkerWindow(JFrame parent,ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
@@ -74,7 +74,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                 String surname = surnameField.getText();
                 int age = Integer.parseInt(ageField.getText());
                 PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
-
+                int id = 0;
                Object worker = switch (Objects.requireNonNull(position)) {
                     case Boss -> new Boss(name, surname, age, id, PositionEnum.Boss);
                     case Manager -> new Manager(name, surname, age, id, PositionEnum.Manager);
@@ -83,7 +83,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                 };
                objectOut.writeObject(worker);
                objectOut.flush();
-                id++;
                 dispose();
 
             } catch (NumberFormatException ex) {

@@ -18,9 +18,12 @@ public class Person implements Serializable {
         this.id = id;
         this.position = position;
     }
+    public void setID(int id) {
+        this.id = id;
+    }
 
     @Override
     public String toString() {
-        return "Name: " + name + " Surname: " + surname + " Age: " + age + " ID: " + id;
+        return "Name: " + name + " Surname: " + surname + " Age: " + age + " ID: " + id + " Position: " + position;
     }
 }

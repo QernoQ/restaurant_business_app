@@ -19,8 +19,4 @@ public class CookGUI extends BaseGUI {
 
     }
 
-    @Override
-    protected void close() {
-
-    }
 }

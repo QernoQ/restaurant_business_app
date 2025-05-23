@@ -21,6 +21,10 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     public AddWorkerWindow(JFrame parent,ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
         this.objectOut = objectOut;
+        init(parent);
+    }
+
+    public void init(JFrame parent) {
         setSize(800, 400);
         setLocationRelativeTo(parent);
         setLayout(null);
@@ -64,6 +68,8 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         add(positionCombo);
 
         setVisible(true);
+
+
     }
 
     @Override

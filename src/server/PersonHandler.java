@@ -29,7 +29,20 @@ public class PersonHandler extends BaseHandler {
     public void run() {
         try {
             while (true) {
-                SortEnum sort = (SortEnum) objectIn.readObject();
+                Object input = objectIn.readObject();
+
+               if (input instanceof String cmd) {
+                    handleStringCommand(cmd);
+                    continue;
+                }
+               SortEnum sort;
+               if (input instanceof SortEnum s) {
+                   sort = s;
+                } else {
+                   serverGUI.displayMessage("[PERSON HANDLER] Unknown request type from client.");
+                   continue;
+               }
+
 
                 ArrayList<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
                 ArrayList<Boss> bosses = new ArrayList<>();
@@ -119,5 +132,15 @@ public class PersonHandler extends BaseHandler {
                 serverGUI.displayMessage("[PERSON HANDLER] Error closing resources: " + e.getMessage());
             }
         }
+    }
+    private void handleStringCommand(String cmd) throws IOException {
+        switch (cmd) {
+            case "TRY_OPEN_ADD_WORKER" -> objectOut.writeBoolean(WindowManager.tryOpenAddWorker());
+            case "CLOSE_ADD_WORKER" -> WindowManager.closeAddWorker();
+            case "TRY_OPEN_MANAGE_WORKER" -> objectOut.writeBoolean(WindowManager.tryOpenManageWorker());
+            case "CLOSE_MANAGE_WORKER" -> WindowManager.closeManageWorker();
+            default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown command: " + cmd);
+        }
+        objectOut.flush();
     }
 }

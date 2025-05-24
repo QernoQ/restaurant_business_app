@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.boss.*;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,6 +15,8 @@ public class BossGUI extends BaseGUI implements ActionListener {
     JButton AddWorker, ManageWorker;
     protected ObjectOutputStream objectOut;
     protected ObjectInputStream objectIn;
+    private AddWorkerWindow addWorkerWindow = null;
+    private ManageWorkerWindow manageWorkerWindow = null;
 
     public BossGUI(String title, Socket socket) throws IOException {
         super(title, socket);
@@ -62,15 +65,39 @@ public class BossGUI extends BaseGUI implements ActionListener {
         setVisible(true);
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == AddWorker) {
-            new AddWorkerWindow(this, objectOut);
+            try {
+                objectOut.writeObject("TRY_OPEN_ADD_WORKER");
+                objectOut.flush();
+                boolean canOpen = objectIn.readBoolean();
+
+                if (canOpen) {
+                    addWorkerWindow = new AddWorkerWindow(BossGUI.this, objectOut);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Windows is already open! Please wait!");
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
 
         } else if (source == ManageWorker) {
-            new ManageWorkerWindow(this, objectOut, objectIn);
+            try {
+                objectOut.writeObject("TRY_OPEN_MANAGE_WORKER");
+                objectOut.flush();
+                boolean canOpen = objectIn.readBoolean();
+
+                if (canOpen) {
+                    manageWorkerWindow = new ManageWorkerWindow(BossGUI.this, objectOut, objectIn);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Windows is already open! Please wait!");
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+
         }
     }
 }

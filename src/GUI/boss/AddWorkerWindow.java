@@ -3,10 +3,7 @@ package GUI.boss;
 import model.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.*;
 import java.util.Objects;
 
@@ -57,10 +54,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         addButton.setBounds(240, 240, 100, 40);
         add(addButton);
         addButton.addActionListener(this);
-        closeButton = new JButton("Close");
-        closeButton.setBounds(360, 240, 100, 40);
-        add(closeButton);
-        closeButton.addActionListener(this);
 
         JLabel positionLabel = new JLabel("Position:");
         positionLabel.setBounds(100, 200, 120, 30);
@@ -77,6 +70,16 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                 addButton.doClick();
             }
         });
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                try {
+                    objectOut.writeObject("CLOSE_ADD_WORKER");
+                    objectOut.flush();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(AddWorkerWindow.this, ex.getMessage());
+                }
+            }
+        });
         setVisible(true);
 
 
@@ -87,8 +90,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         if (e.getSource() == addButton) {
             handleAddWorker();
 
-        } else if (e.getSource() == closeButton) {
-            dispose();
         }
     }
     private void handleAddWorker() {
@@ -121,6 +122,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             objectOut.flush();
             objectOut.writeObject(worker);
             objectOut.flush();
+            dispose();
 
             JOptionPane.showMessageDialog(AddWorkerWindow.this, "Worker Added!");
 

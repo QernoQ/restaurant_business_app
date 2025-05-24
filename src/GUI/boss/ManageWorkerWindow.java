@@ -5,6 +5,8 @@ import model.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -122,6 +124,17 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setVisible(false);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                try {
+                    objectOut.writeObject("CLOSE_MANAGE_WORKER");
+                    objectOut.flush();
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(ManageWorkerWindow.this, ex.getMessage());
+                }
+            }
+        });
+
         setVisible(true);
     }
 
@@ -193,6 +206,7 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
             objectOut.flush();
             objectOut.writeObject(temp);
             objectOut.flush();
+
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, ioe.getMessage());
         }

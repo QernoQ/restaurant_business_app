@@ -2,12 +2,13 @@ package server;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServerGUI extends JFrame {
     private JTextArea serverArea;
+    private DateTimeFormatter formated = DateTimeFormatter.ofPattern("dd-MM-yyyy - HH:mm:ss");
 
     PrintWriter in;
 
@@ -24,6 +25,7 @@ public class ServerGUI extends JFrame {
         serverArea = new JTextArea();
         serverArea.setEditable(false);
         serverArea.setFocusable(true);
+        serverArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         add(serverArea, BorderLayout.CENTER);
         JScrollPane js = new JScrollPane(serverArea);
         add(js, BorderLayout.CENTER);
@@ -31,7 +33,8 @@ public class ServerGUI extends JFrame {
     }
 
     public void displayMessage(String message) {
-        serverArea.append(message + "\n");
+        LocalDateTime now = LocalDateTime.now();
+        serverArea.append("[" + formated.format(now) + "] " + message + "\n");
 
     }
 

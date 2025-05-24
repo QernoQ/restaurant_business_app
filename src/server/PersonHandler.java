@@ -5,6 +5,8 @@ import model.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PersonHandler extends BaseHandler {
     private ObjectOutputStream objectOut;
@@ -27,30 +29,7 @@ public class PersonHandler extends BaseHandler {
     public void run() {
         try {
             while (true) {
-                Object msg = objectIn.readObject();
-
-                if (!(msg instanceof String sort)) {
-                    serverGUI.displayMessage("[PERSON HANDLER] Invalid sort type received.");
-                    continue;
-                }
-
-                if (sort.equals("ADD")) {
-                    Object obj = objectIn.readObject();
-
-                    if (!(obj instanceof Person)) {
-                        serverGUI.displayMessage("[PERSON HANDLER] Received non-person object.");
-                        continue;
-                    }
-
-                    String temp = readFromFile.readID();
-                    int newID = Integer.parseInt(temp);
-                    objectOut.writeObject(temp);
-
-                    ((Person) obj).setID(newID);
-                    saveToFile.saveObjectToFile(obj);
-                    saveToFile.saveID(String.valueOf(newID + 1));
-                    continue;
-                }
+                SortEnum sort = (SortEnum) objectIn.readObject();
 
                 ArrayList<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
                 ArrayList<Boss> bosses = new ArrayList<>();
@@ -66,29 +45,62 @@ public class PersonHandler extends BaseHandler {
                 }
 
                 switch (sort) {
-                    case "BOSS" -> {
+                    case ADD ->
+                    {
+                        Object obj = objectIn.readObject();
+                        String temp = readFromFile.readID();
+                        int newID = Integer.parseInt(temp);
+                        ((Person) obj).setID(newID);
+                        saveToFile.saveObjectToFile(obj);
+                        saveToFile.saveID(String.valueOf(newID + 1));
+                    }
+                    case BOSS -> {
                         objectOut.writeObject(bosses);
                         for (Boss b : bosses) {
                             serverGUI.displayMessage("Loaded Boss list " + b);
                         }
                     }
-                    case "MANAGER" -> {
+                    case MANAGER -> {
                         objectOut.writeObject(managers);
                         for (Manager m : managers) {
                             serverGUI.displayMessage("Loaded Manager list " + m);
                         }
                     }
-                    case "COOK" -> {
+                    case COOK -> {
                         objectOut.writeObject(cooks);
                         for (Cook c : cooks) {
                             serverGUI.displayMessage("Loaded Cook list " + c);
                         }
                     }
-                    case "WAITER" -> {
+                    case WAITER -> {
                         objectOut.writeObject(waiters);
                         for (Waiter w : waiters) {
                             serverGUI.displayMessage("Loaded Waiter list " + w);
                         }
+                    }
+                    case SAVE -> {
+                        serverGUI.displayMessage("[PERSON HANDLER] Changed Worker from: " + objectIn.readObject() + "to: " +objectIn.readObject());
+                        ArrayList<Person> persons = (ArrayList<Person>) objectIn.readObject();
+                        Map<Integer,Person> map = new HashMap<>();
+                        for (Person p : persons) {
+                            map.put(p.getId(), p);
+                        }
+                        for(Person p : allPersons) {
+                            map.putIfAbsent(p.getId(), p);
+                        }
+                        persons.clear();
+                        persons.addAll(map.values());
+                        persons.sort((p1, p2) -> Integer.compare(p1.getId(), p2.getId()));
+                        saveToFile.saveListToFile(persons);
+                    }
+                    case REMOVE -> {
+                        Person delete = (Person) objectIn.readObject();
+                        serverGUI.displayMessage("[PERSON HANDLER] Removing " + delete);
+                        allPersons.remove(delete);
+                        saveToFile.saveListToFile(allPersons);
+                        String temp = readFromFile.readID();
+                        int newID = Integer.parseInt(temp);
+                        saveToFile.saveID(String.valueOf(newID - 1));
                     }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }

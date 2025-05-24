@@ -1,7 +1,10 @@
 package server;
 
+import model.Person;
+
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class SaveToFile implements Serializable {
 
@@ -23,11 +26,27 @@ public class SaveToFile implements Serializable {
     public void saveID(String newID) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("id.txt"))) {
             writer.write(newID);
-            serverGui.displayMessage("[SAVETOFILE] ID++");
+            serverGui.displayMessage("[SAVETOFILE] ID Changed!");
         } catch (FileNotFoundException e) {
             serverGui.displayMessage("[SAVETOFILE] Cannot create or open file id.txt");
         } catch (IOException e) {
             serverGui.displayMessage("[SAVETOFILE] Error writing to id.txt: " + e.getMessage());
+        }
+    }
+
+    public void saveListToFile(ArrayList<Person> personList) {
+        File file = new File("Workers.ser");
+
+        try (FileOutputStream fos = new FileOutputStream(file);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+
+            for (Person p : personList) {
+                oos.writeObject(p);
+                serverGui.displayMessage("[SAVETOFILE] Successfully saved to file: " + p);
+            }
+
+        } catch (IOException e) {
+            serverGui.displayMessage("[SAVETOFILE] Error saving object: " + e.getMessage());
         }
     }
 

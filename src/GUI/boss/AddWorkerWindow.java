@@ -7,14 +7,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.Objects;
 
 public class AddWorkerWindow extends JDialog implements ActionListener {
-    JButton addButton;
+    JButton addButton,closeButton;
     JTextField nameField, surnameField, ageField;
     JComboBox<PositionEnum> positionCombo;
 
@@ -60,6 +57,10 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         addButton.setBounds(240, 240, 100, 40);
         add(addButton);
         addButton.addActionListener(this);
+        closeButton = new JButton("Close");
+        closeButton.setBounds(360, 240, 100, 40);
+        add(closeButton);
+        closeButton.addActionListener(this);
 
         JLabel positionLabel = new JLabel("Position:");
         positionLabel.setBounds(100, 200, 120, 30);
@@ -68,6 +69,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         positionCombo.setBounds(240, 200, 420, 30);
         add(positionLabel);
         add(positionCombo);
+
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "addWorker");
         getRootPane().getActionMap().put("addWorker", new AbstractAction() {
             @Override
@@ -83,29 +85,50 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
-            try {
-                String name = nameField.getText();
-                String surname = surnameField.getText();
-                int age = Integer.parseInt(ageField.getText());
-                PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
-                int id = 0;
-                Object worker = switch (Objects.requireNonNull(position)) {
-                    case Boss -> new Boss(name, surname, age, id, PositionEnum.Boss);
-                    case Manager -> new Manager(name, surname, age, id, PositionEnum.Manager);
-                    case Cook -> new Cook(name, surname, age, id, PositionEnum.Cook);
-                    case Waiter -> new Waiter(name, surname, age, id, PositionEnum.Waiter);
-                };
-                objectOut.writeObject("ADD");
-                objectOut.flush();
-                objectOut.writeObject(worker);
-                objectOut.flush();
-                dispose();
+            handleAddWorker();
 
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Something went wrong: " + ex.getMessage());
+        } else if (e.getSource() == closeButton) {
+            dispose();
+        }
+    }
+    private void handleAddWorker() {
+        try {
+            String name = nameField.getText().trim();
+            String surname = surnameField.getText().trim();
+            String ageText = ageField.getText().trim();
+
+            if (name.isEmpty() || surname.isEmpty() || ageText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "All fields must be filled.");
+                return;
             }
+
+            int age = Integer.parseInt(ageText);
+            if (age <= 0 || age >= 100) {
+                JOptionPane.showMessageDialog(this, "Age must be between 1 and 99.");
+                return;
+            }
+
+            PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
+            int id = 0;
+            Object worker = switch (Objects.requireNonNull(position)) {
+                case Boss -> new Boss(name, surname, age, id, position);
+                case Manager -> new Manager(name, surname, age, id, position);
+                case Cook -> new Cook(name, surname, age, id, position);
+                case Waiter -> new Waiter(name, surname, age, id, position);
+            };
+
+            objectOut.writeObject(SortEnum.ADD);
+            objectOut.flush();
+            objectOut.writeObject(worker);
+            objectOut.flush();
+
+            JOptionPane.showMessageDialog(AddWorkerWindow.this, "Worker Added!");
+
+
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Something went wrong: " + ex.getMessage());
         }
     }
 }

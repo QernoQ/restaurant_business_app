@@ -25,7 +25,6 @@ public class ReadFromFile implements Serializable {
                     Object obj = readObject.readObject();
                     if (obj instanceof Person) {
                         persons.add((Person) obj);
-                        serverGui.displayMessage("Person read: " + obj.toString());
                     }
                 } catch (EOFException eof) {
                     break;

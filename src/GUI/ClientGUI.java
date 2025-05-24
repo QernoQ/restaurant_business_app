@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.net.Socket;
 
@@ -62,10 +64,15 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         loginButton.addActionListener(this);
         loginPanel.add(Box.createVerticalGlue());
         loginContainer.add(loginPanel, BorderLayout.CENTER);
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "login");
+        getRootPane().getActionMap().put("login", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loginButton.doClick();
+            }
+        });
         setVisible(true);
     }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();

@@ -66,12 +66,33 @@ public class PersonHandler extends BaseHandler {
                 }
 
                 switch (sort) {
-                    case "BOSS" -> objectOut.writeObject(bosses);
-                    case "MANAGER" -> objectOut.writeObject(managers);
-                    case "COOK" -> objectOut.writeObject(cooks);
-                    case "WAITER" -> objectOut.writeObject(waiters);
+                    case "BOSS" -> {
+                        objectOut.writeObject(bosses);
+                        for (Boss b : bosses) {
+                            serverGUI.displayMessage("Loaded Boss list " + b);
+                        }
+                    }
+                    case "MANAGER" -> {
+                        objectOut.writeObject(managers);
+                        for (Manager m : managers) {
+                            serverGUI.displayMessage("Loaded Manager list " + m);
+                        }
+                    }
+                    case "COOK" -> {
+                        objectOut.writeObject(cooks);
+                        for (Cook c : cooks) {
+                            serverGUI.displayMessage("Loaded Cook list " + c);
+                        }
+                    }
+                    case "WAITER" -> {
+                        objectOut.writeObject(waiters);
+                        for (Waiter w : waiters) {
+                            serverGUI.displayMessage("Loaded Waiter list " + w);
+                        }
+                    }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
+
             }
         } catch (IOException e) {
             serverGUI.displayMessage("[PERSON HANDLER] Client disconnected: " + socket.getRemoteSocketAddress());

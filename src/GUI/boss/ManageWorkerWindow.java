@@ -5,14 +5,13 @@ import model.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class ManageWorkerWindow extends JDialog implements ActionListener {
     private JButton editButton, removeButton;
-    private JButton manageBossesButton, manageManagersButton, manageCooksButton, manageWaitersButton;
+    private JButton manageBossesButton, manageManagersButton, manageCooksButton, manageWaitersButton,backButton,nextButton;
     private JTextField nameField, surnameField, ageField;
     JComboBox<PositionEnum> positionCombo;
     private ObjectOutputStream objectOut;
@@ -57,6 +56,8 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         manageCooksButton.addActionListener(this);
         manageWaitersButton.addActionListener(this);
 
+
+
         JLabel nameLabel = new JLabel("Name:");
         nameLabel.setBounds(100, 80, 120, 30);
         add(nameLabel);
@@ -88,18 +89,29 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         positionLabel.setBounds(100, 230, 120, 30);
         positionCombo = new JComboBox<>();
         positionCombo.setEditable(false);
+        positionCombo.setFocusable(false);
         positionCombo.setBounds(240, 230, 420, 30);
         add(positionLabel);
         add(positionCombo);
 
         editButton = new JButton("Edit");
-        editButton.setBounds(240, 280, 100, 40);
+        editButton.setBounds(240, 300, 100, 40);
         add(editButton);
+        editButton.addActionListener(this);
 
         removeButton = new JButton("Remove");
-        removeButton.setBounds(380, 280, 100, 40);
+        removeButton.setBounds(360, 300, 100, 40);
         add(removeButton);
+        removeButton.addActionListener(this);
 
+        backButton = new JButton("Back");
+        backButton.setBounds(480, 300, 80, 40);
+        backButton.addActionListener(this);
+        add(backButton);
+        nextButton = new JButton("Next");
+        nextButton.setBounds(570, 300, 80, 40);
+        add(nextButton);
+        nextButton.addActionListener(this);
         setVisible(true);
     }
 
@@ -108,28 +120,54 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         Object source = e.getSource();
 
         String sort = null;
-        int page = 0;
-        if (source == manageBossesButton) sort = "BOSS";
-        else if (source == manageManagersButton) sort = "MANAGER";
-        else if (source == manageCooksButton) sort = "COOK";
-        else if (source == manageWaitersButton) sort = "WAITER";
-
-    if (sort != null) {
-        try {
-            loadWorkerList(sort);
-            if (!currentList.isEmpty()) {
-                currentIndex = 0;
-                displayPersonData(currentList.get(currentIndex));
-            } else {
-                clearFields();
+        if (source == manageBossesButton)
+        {
+            sort = "BOSS";
+            loadDate(sort);
             }
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Error loading data: " + ex.getMessage());
+
+
+        else if (source == manageManagersButton)
+        {
+            sort = "MANAGER";
+            loadDate(sort);
         }
-    }
+        else if (source == manageCooksButton)
+        {
+            sort = "COOK";
+            loadDate(sort);
+        }
+        else if (source == manageWaitersButton)
+        {
+            sort = "WAITER";
+            loadDate(sort);
+        } else if(source == nextButton)
+        {
+            currentIndex = (currentIndex + 1) % currentList.size();
+            displayPersonData(currentList.get(currentIndex));
+        }
+        else if(source == backButton)
+        {
+            if(currentIndex > 0)
+            {
+                currentIndex--;
+            }
+            displayPersonData(currentList.get(currentIndex));
+        }
 }
 
-    private void loadWorkerList(String sort) throws Exception {
+    private void loadDate(String sort) {
+        try {
+            currentIndex = 0;
+            loadList(sort);
+            displayPersonData(currentList.get(currentIndex));
+        } catch(Exception ex) {
+            JOptionPane.showMessageDialog(ManageWorkerWindow.this, ex.getMessage(), "[READ MANAGER] Error", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+
+    private void loadList(String sort) throws Exception {
         objectOut.writeObject(sort);
         objectOut.flush();
 
@@ -158,6 +196,6 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         nameField.setText(person.getName());
         surnameField.setText(person.getSurname());
         ageField.setText(String.valueOf(person.getAge()));
-        positionCombo.setSelectedItem(person.getPosition());
+        positionCombo.addItem(person.getPosition());
     }
 }

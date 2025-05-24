@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.*;
 import java.net.Socket;
 
@@ -65,10 +67,11 @@ public class BossGUI extends BaseGUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == AddWorker) {
-            new AddWorkerWindow(this,objectOut);
+            new AddWorkerWindow(this, objectOut);
 
         } else if (source == ManageWorker) {
-            new ManageWorkerWindow(this,objectOut,objectIn);
+            new ManageWorkerWindow(this, objectOut, objectIn);
         }
     }
 }
+

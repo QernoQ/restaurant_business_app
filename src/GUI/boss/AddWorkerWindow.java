@@ -5,6 +5,8 @@ import model.*;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -18,7 +20,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
 
     private ObjectOutputStream objectOut;
 
-    public AddWorkerWindow(JFrame parent,ObjectOutputStream objectOut) {
+    public AddWorkerWindow(JFrame parent, ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
         this.objectOut = objectOut;
         init(parent);
@@ -66,7 +68,13 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         positionCombo.setBounds(240, 200, 420, 30);
         add(positionLabel);
         add(positionCombo);
-
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "addWorker");
+        getRootPane().getActionMap().put("addWorker", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addButton.doClick();
+            }
+        });
         setVisible(true);
 
 
@@ -81,17 +89,17 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                 int age = Integer.parseInt(ageField.getText());
                 PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
                 int id = 0;
-               Object worker = switch (Objects.requireNonNull(position)) {
+                Object worker = switch (Objects.requireNonNull(position)) {
                     case Boss -> new Boss(name, surname, age, id, PositionEnum.Boss);
                     case Manager -> new Manager(name, surname, age, id, PositionEnum.Manager);
                     case Cook -> new Cook(name, surname, age, id, PositionEnum.Cook);
                     case Waiter -> new Waiter(name, surname, age, id, PositionEnum.Waiter);
                 };
-               objectOut.writeObject("ADD");
-               objectOut.flush();
-               objectOut.writeObject(worker);
-               objectOut.flush();
-               dispose();
+                objectOut.writeObject("ADD");
+                objectOut.flush();
+                objectOut.writeObject(worker);
+                objectOut.flush();
+                dispose();
 
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
@@ -101,4 +109,3 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         }
     }
 }
-

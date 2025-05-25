@@ -19,7 +19,7 @@ public class ClientGUI extends BaseGUI implements ActionListener {
     }
 
     public void init() {
-        setSize(400, 200);
+        setSize(400, 220);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
@@ -28,49 +28,60 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         loginContainer.setLayout(new BorderLayout());
 
         JPanel loginPanel = new JPanel();
-        loginPanel.setBackground(Color.DARK_GRAY);
+        loginPanel.setBackground(new Color(40, 40, 40));
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
+        loginPanel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
 
-        Font labelFont = new Font("FlatLaf", Font.BOLD, 16);
-        Font smallFont = new Font("FlatLaf", Font.PLAIN, 14);
+        Font titleFont = new Font("Serif", Font.BOLD, 18);
+        Font labelFont = new Font("sSerif", Font.PLAIN, 14);
 
-        JLabel titleLabel = new JLabel("Login to Access");
-        titleLabel.setFont(labelFont);
+        JLabel titleLabel = new JLabel("🔒 Log in to access");
+        titleLabel.setFont(titleFont);
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         JLabel loginLabel = new JLabel("Login:");
-        loginLabel.setFont(smallFont);
-        loginLabel.setForeground(Color.WHITE);
+        loginLabel.setFont(labelFont);
+        loginLabel.setForeground(Color.LIGHT_GRAY);
         loginLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 5, 0));
 
         loginTextField = new JTextField();
-        loginTextField.setMaximumSize(new Dimension(150, 25));
-        loginTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginTextField.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+        loginTextField.setMaximumSize(new Dimension(200, 30));
+        loginTextField.setFont(new Font("Serif", Font.PLAIN, 14));
+        loginTextField.setHorizontalAlignment(JTextField.CENTER);
+        loginTextField.setBackground(new Color(60, 60, 60));
+        loginTextField.setForeground(Color.WHITE);
+        loginTextField.setCaretColor(Color.WHITE);
+        loginTextField.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100), 1));
 
-        loginButton = new JButton("Enter");
+        loginButton = new JButton("Login");
+        loginButton.setFont(labelFont);
+        loginButton.setBackground(new Color(70, 130, 180));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
         loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        loginButton.setMaximumSize(new Dimension(100, 30));
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        loginPanel.add(Box.createVerticalGlue());
         loginPanel.add(titleLabel);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         loginPanel.add(loginLabel);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         loginPanel.add(loginTextField);
-        loginPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        loginPanel.add(Box.createRigidArea(new Dimension(0, 15)));
         loginPanel.add(loginButton);
+
         loginButton.addActionListener(this);
-        loginPanel.add(Box.createVerticalGlue());
         loginContainer.add(loginPanel, BorderLayout.CENTER);
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "login");
+
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "login");
         getRootPane().getActionMap().put("login", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 loginButton.doClick();
             }
         });
+
         setVisible(true);
     }
     @Override

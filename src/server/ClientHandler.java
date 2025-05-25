@@ -6,15 +6,16 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class PersonHandler extends BaseHandler {
+public class ClientHandler extends BaseHandler {
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
     private SaveToFile saveToFile;
     private ReadFromFile readFromFile;
 
-    public PersonHandler(Socket socket, ServerGUI serverGUI) {
+    public ClientHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
         try {
             this.objectOut = new ObjectOutputStream(socket.getOutputStream());
@@ -44,11 +45,11 @@ public class PersonHandler extends BaseHandler {
                 }
 
 
-                ArrayList<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
-                ArrayList<Boss> bosses = new ArrayList<>();
-                ArrayList<Manager> managers = new ArrayList<>();
-                ArrayList<Cook> cooks = new ArrayList<>();
-                ArrayList<Waiter> waiters = new ArrayList<>();
+                List<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
+                List<Boss> bosses = new ArrayList<>();
+                List<Manager> managers = new ArrayList<>();
+                List<Cook> cooks = new ArrayList<>();
+                List<Waiter> waiters = new ArrayList<>();
 
                 for (Person p : allPersons) {
                     if (p instanceof Boss b) bosses.add(b);
@@ -60,11 +61,11 @@ public class PersonHandler extends BaseHandler {
                 switch (sort) {
                     case ADD -> {
                         Object obj = objectIn.readObject();
-                        String temp = readFromFile.readID();
+                        String temp = readFromFile.readID("id.txt");
                         int newID = Integer.parseInt(temp);
                         ((Person) obj).setID(newID);
-                        saveToFile.saveObjectToFile(obj);
-                        saveToFile.saveID(String.valueOf(newID + 1));
+                        saveToFile.saveObjectToFile(obj,"Workers.ser");
+                        saveToFile.saveID(String.valueOf(newID + 1),"id.txt");
                     }
                     case BOSS -> {
                         objectOut.writeObject(bosses);
@@ -96,7 +97,7 @@ public class PersonHandler extends BaseHandler {
                     }
                     case SAVE -> {
                         serverGUI.displayMessage("[PERSON HANDLER] Changed Worker from: " + objectIn.readObject() + "to: " + objectIn.readObject());
-                        ArrayList<Person> persons = (ArrayList<Person>) objectIn.readObject();
+                        List<Person> persons = (ArrayList<Person>) objectIn.readObject();
                         Map<Integer, Person> map = new HashMap<>();
                         for (Person p : persons) {
                             map.put(p.getId(), p);
@@ -107,22 +108,33 @@ public class PersonHandler extends BaseHandler {
                         persons.clear();
                         persons.addAll(map.values());
                         persons.sort((p1, p2) -> Integer.compare(p1.getId(), p2.getId()));
-                        saveToFile.saveListToFile(persons);
+                        saveToFile.saveListToFile(persons,"Workers.ser");
                     }
                     case REMOVE -> {
                         Person delete = (Person) objectIn.readObject();
                         serverGUI.displayMessage("[PERSON HANDLER] Removing " + delete);
                         allPersons.removeIf(p -> p.getId() == delete.getId());
                         allPersons.sort((p1, p2) -> Integer.compare(p1.getId(), p2.getId()));
-                        saveToFile.saveListToFile(allPersons);
-                        String temp = readFromFile.readID();
+                        saveToFile.saveListToFile(allPersons,"Workers.ser");
+                        String temp = readFromFile.readID("id.txt");
                         int newID = Integer.parseInt(temp);
                         if (newID <= 0) {
                             newID = 0;
                         } else {
                             newID = newID - 1;
                         }
-                        saveToFile.saveID(String.valueOf(newID));
+                        saveToFile.saveID(String.valueOf(newID),"id.txt");
+                    }
+                    case ADDBILL ->
+                    {
+                        String temp = readFromFile.readID("billid.txt");
+                        int currentId = Integer.parseInt(temp);
+                        int nextID = currentId + 1;
+                        objectOut.writeObject(nextID);
+                        Bill bill = (Bill) objectIn.readObject();
+                        serverGUI.displayMessage("[PERSON HANDLER] Added bill:  " + bill);
+                        saveToFile.saveID(String.valueOf(nextID),"billid.txt");
+                        saveToFile.saveObjectToFile(bill,"bills.ser");
                     }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }

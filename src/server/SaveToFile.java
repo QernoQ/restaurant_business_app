@@ -4,6 +4,7 @@ import model.Person;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.List;
 import java.util.ArrayList;
 
 public class SaveToFile implements Serializable {
@@ -16,8 +17,9 @@ public class SaveToFile implements Serializable {
         this.socket = socket;
         this.serverGui = serverGui;
     }
-    public void saveID(String newID) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("id.txt"))) {
+    public void saveID(String newID,String fileName) {
+        File file = new File(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(newID);
             serverGui.displayMessage("[SAVETOFILE] ID Changed!");
         } catch (FileNotFoundException e) {
@@ -27,13 +29,13 @@ public class SaveToFile implements Serializable {
         }
     }
 
-    public void saveListToFile(ArrayList<Person> personList) {
-        File file = new File("Workers.ser");
+    public void saveListToFile(List<?> personList,String fileName) {
+        File file = new File(fileName);
 
         try (FileOutputStream fos = new FileOutputStream(file);
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 
-            for (Person p : personList) {
+            for (Object p : personList) {
                 oos.writeObject(p);
             }
             serverGui.displayMessage("[SAVETOFILE] Successfully saved to file!");
@@ -43,8 +45,8 @@ public class SaveToFile implements Serializable {
         }
     }
 
-    public void saveObjectToFile(Object worker) {
-        File file = new File("Workers.ser");
+    public void saveObjectToFile(Object worker,String fileName) {
+        File file = new File(fileName);
         boolean append = file.exists();
 
         try (FileOutputStream fos = new FileOutputStream(file, true);

@@ -27,7 +27,7 @@ public class MenuHandler extends BaseHandler {
                     case "cook":
                         out.println(chooseMenu);
                         serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected by : " + socket.getInetAddress().getHostAddress());
-                        new PersonHandler(socket, serverGUI).start();
+                        new ClientHandler(socket, serverGUI).start();
                         return;
                     default:
                         out.println("invalidLogin");

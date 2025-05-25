@@ -1,8 +1,10 @@
 package GUI.boss;
 
+import GUI.BossGUI;
 import model.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -27,10 +29,13 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
     private String surname;
     private String ageText;
 
-    public ManageWorkerWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
+    private BossGUI bossGUI;
+
+    public ManageWorkerWindow(BossGUI bossGUI,JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
         super(parent, "Add Worker", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
+        this.bossGUI = bossGUI;
         this.currentList = new ArrayList<>();
         init(parent);
     }
@@ -40,8 +45,8 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         setLocationRelativeTo(parent);
         setLayout(null);
         setResizable(false);
-
-
+        getContentPane().setBackground(Color.DARK_GRAY);
+        getContentPane().setForeground(Color.white);
         manageBossesButton = new JButton("Manage Bosses");
         manageBossesButton.setBounds(50, 20, 150, 35);
         add(manageBossesButton);
@@ -124,6 +129,28 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setVisible(false);
+        Font labelFont = new Font("Serif", Font.BOLD, 14);
+        Font inputFont = new Font("Serif", Font.PLAIN, 14);
+        Color labelColor = Color.WHITE;
+        Color inputBg = new Color(60, 60, 60);
+        Color labelBg = new Color(100, 100, 100);
+        bossGUI.style(nameLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(surnameLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(ageLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(positionLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(nameField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(surnameField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(ageField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(positionCombo, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.styleButton(editButton);
+        bossGUI.styleButton(saveButton);
+        bossGUI.styleButton(removeButton);
+        bossGUI.styleButton(nextButton);
+        bossGUI.styleButton(backButton);
+        bossGUI.styleButton(manageBossesButton);
+        bossGUI.styleButton(manageManagersButton);
+        bossGUI.styleButton(manageCooksButton);
+        bossGUI.styleButton(manageWaitersButton);
 
 
         addWindowListener(new WindowAdapter() {
@@ -136,7 +163,6 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
                 }
             }
         });
-
         setVisible(true);
     }
 

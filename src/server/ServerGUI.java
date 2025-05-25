@@ -27,11 +27,15 @@ public class ServerGUI extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
         serverArea = new JTextArea();
+        serverArea.setBackground(new Color(100,100,100));
+        serverArea.setForeground(Color.white);
+        serverArea.setLineWrap(true);
+        serverArea.setWrapStyleWord(true);
         DefaultCaret caret = (DefaultCaret) serverArea.getCaret();
         caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         serverArea.setEditable(false);
         serverArea.setFocusable(true);
-        serverArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        serverArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         add(serverArea, BorderLayout.CENTER);
         JScrollPane js = new JScrollPane(serverArea);
         add(js, BorderLayout.CENTER);

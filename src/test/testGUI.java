@@ -1,6 +1,7 @@
 package test;
 
 import GUI.BossGUI;
+import GUI.WaiterGUI;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,7 +14,7 @@ public class testGUI {
 
             Socket dummySocket = new DummySocket(pis, pos);
 
-            new BossGUI("TEST - Boss GUI", dummySocket);
+            new WaiterGUI("TEST GUI", dummySocket);
 
         } catch (IOException e) {
             e.printStackTrace();

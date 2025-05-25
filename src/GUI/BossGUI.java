@@ -12,9 +12,9 @@ import java.io.*;
 import java.net.Socket;
 
 public class BossGUI extends BaseGUI implements ActionListener {
-    JButton AddWorker, ManageWorker;
     protected ObjectOutputStream objectOut;
     protected ObjectInputStream objectIn;
+    JButton AddWorker, ManageWorker;
     private AddWorkerWindow addWorkerWindow = null;
     private ManageWorkerWindow manageWorkerWindow = null;
 
@@ -61,6 +61,9 @@ public class BossGUI extends BaseGUI implements ActionListener {
 
         BossContainer.add(titlePanel, BorderLayout.NORTH);
         BossContainer.add(buttonPanel, BorderLayout.CENTER);
+        styleButton(AddWorker);
+        styleButton(ManageWorker);
+        style(titleLabel, labelFont, labelColor, labelBg);
 
         setVisible(true);
     }
@@ -75,7 +78,7 @@ public class BossGUI extends BaseGUI implements ActionListener {
                 boolean canOpen = objectIn.readBoolean();
 
                 if (canOpen) {
-                    addWorkerWindow = new AddWorkerWindow(BossGUI.this, objectOut);
+                    addWorkerWindow = new AddWorkerWindow(BossGUI.this,this, objectOut);
                 } else {
                     JOptionPane.showMessageDialog(this, "Windows is already open! Please wait!");
                 }
@@ -90,7 +93,7 @@ public class BossGUI extends BaseGUI implements ActionListener {
                 boolean canOpen = objectIn.readBoolean();
 
                 if (canOpen) {
-                    manageWorkerWindow = new ManageWorkerWindow(BossGUI.this, objectOut, objectIn);
+                    manageWorkerWindow = new ManageWorkerWindow(BossGUI.this,this, objectOut, objectIn);
                 } else {
                     JOptionPane.showMessageDialog(this, "Windows is already open! Please wait!");
                 }

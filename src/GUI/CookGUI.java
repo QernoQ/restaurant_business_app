@@ -8,7 +8,7 @@ public class CookGUI extends BaseGUI {
         super(title,socket);
         init();
     }
-
+ //  👩🏻‍🍳
     @Override
     protected void init() {
         setSize(400, 200);

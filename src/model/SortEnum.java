@@ -8,6 +8,7 @@ public enum SortEnum {
     MANAGER,
     COOK,
     WAITER,
+    ADDBILL,
 
 
 

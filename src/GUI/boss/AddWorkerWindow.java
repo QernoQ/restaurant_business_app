@@ -1,9 +1,11 @@
 package GUI.boss;
 
+import GUI.BossGUI;
 import model.*;
 import server.WindowManager;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Objects;
@@ -14,9 +16,11 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     JComboBox<PositionEnum> positionCombo;
 
     private ObjectOutputStream objectOut;
+    private BossGUI bossGUI;
 
-    public AddWorkerWindow(JFrame parent, ObjectOutputStream objectOut) {
+    public AddWorkerWindow(BossGUI bossGUI,JFrame parent, ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
+        this.bossGUI = bossGUI;
         this.objectOut = objectOut;
         init(parent);
     }
@@ -27,6 +31,8 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(null);
         setResizable(false);
+        getContentPane().setBackground(Color.DARK_GRAY);
+        getContentPane().setForeground(Color.white);
 
         JLabel nameLabel = new JLabel("Name:");
         nameLabel.setBounds(100, 50, 120, 30);
@@ -65,6 +71,16 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         add(positionLabel);
         add(positionCombo);
 
+        bossGUI.style(nameLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(surnameLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(ageLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(positionLabel, bossGUI.labelFont, bossGUI.labelColor, bossGUI.labelBg);
+        bossGUI.style(nameField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(surnameField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(ageField, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.style(positionCombo, bossGUI.inputFont, bossGUI.labelColor, bossGUI.inputBg);
+        bossGUI.styleButton(addButton);
+
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "addWorker");
         getRootPane().getActionMap().put("addWorker", new AbstractAction() {
             @Override
@@ -83,8 +99,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             }
         });
         setVisible(true);
-
-
     }
 
     @Override

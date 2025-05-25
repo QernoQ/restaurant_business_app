@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class serFileTester {
     public static void main(String[] args) {
-        String fileName = "Workers.ser";
+        String fileName = "bills.ser";
         ArrayList<Object> list = new ArrayList<>();
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {

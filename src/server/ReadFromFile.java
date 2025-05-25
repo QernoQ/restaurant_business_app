@@ -19,6 +19,11 @@ public class ReadFromFile implements Serializable {
 
     public ArrayList<Person> readObjectsFromFile(String fileName) {
         ArrayList<Person> persons = new ArrayList<Person>();
+        File file = new File(fileName);
+        if (!file.exists()) {
+            serverGui.displayMessage("[READFROMFILE] File not found: " + fileName);
+            return persons;
+        }
         try (ObjectInputStream readObject = new ObjectInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
@@ -36,14 +41,14 @@ public class ReadFromFile implements Serializable {
         return persons;
     }
 
-    public String readID() {
-        File idFile = new File("id.txt");
+    public String readID(String fileName) {
+        File idFile = new File(fileName);
 
         if (!idFile.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(idFile))) {
-                writer.write("1");
+                writer.write("0");
             } catch (IOException e) {
-                serverGui.displayMessage("[READFROMFILE] Error creating id.txt: " + e.getMessage());
+                serverGui.displayMessage("[READFROMFILE] Error creating:  " + idFile + e.getMessage());
                 return null;
             }
         }
@@ -51,7 +56,7 @@ public class ReadFromFile implements Serializable {
         try (BufferedReader reader = new BufferedReader(new FileReader(idFile))) {
             return reader.readLine();
         } catch (IOException e) {
-            serverGui.displayMessage("[READFROMFILE] Error reading from file id.txt: " + e.getMessage());
+            serverGui.displayMessage("[READFROMFILE] Error reading from file: " + idFile + e.getMessage());
             return null;
         }
     }

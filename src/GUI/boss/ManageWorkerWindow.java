@@ -124,6 +124,8 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         add(saveButton);
         saveButton.addActionListener(this);
         saveButton.setVisible(false);
+
+
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 try {
@@ -156,22 +158,15 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
             sort = SortEnum.WAITER;
             loadDate(sort);
         } else if (source == nextButton) {
-            if (currentList != null) {
+            if (!currentList.isEmpty()) {
                 currentIndex = (currentIndex + 1) % currentList.size();
                 displayPersonData(currentList.get(currentIndex));
-            } else {
-                nextButton.setEnabled(false);
-                saveButton.setEnabled(false);
             }
         } else if (source == backButton) {
-            if(currentList != null) {
+            if (!currentList.isEmpty()) {
                 if (currentIndex > 0) {
                     currentIndex--;
                 }
-            } else
-            {
-                nextButton.setEnabled(false);
-                saveButton.setEnabled(false);
             }
             displayPersonData(currentList.get(currentIndex));
         } else if (source == editButton) {
@@ -184,23 +179,16 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
     }
 
     public void handleRemoveWorker() {
-        Person temp = currentList.get(currentIndex);
-        currentList.remove(currentIndex);
+        int confirmation = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to remove this worker?",
+                "Confirm Removal",
+                JOptionPane.YES_NO_OPTION);
 
-        if (currentList.isEmpty()) {
-            nameField.setText("");
-            surnameField.setText("");
-            ageField.setText("");
-            positionCombo.removeAllItems();
-            removeButton.setEnabled(false);
-            editButton.setEnabled(false);
-
-        } else if (currentIndex >= currentList.size()) {
-            currentIndex = currentList.size() - 1;
-            displayPersonData(currentList.get(currentIndex));
-        } else {
-            displayPersonData(currentList.get(currentIndex));
+        if (confirmation != JOptionPane.YES_OPTION) {
+            return;
         }
+        Person temp = currentList.get(currentIndex);
+        currentList.remove(temp);
         try {
             objectOut.writeObject(SortEnum.REMOVE);
             objectOut.flush();
@@ -209,16 +197,30 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
 
         } catch (IOException ioe) {
             JOptionPane.showMessageDialog(null, ioe.getMessage());
+            currentList.add(currentIndex,temp);
+            return;
+        }
+        if (currentList.isEmpty()) {
+            clear();
+            enabled(false);
+            JOptionPane.showMessageDialog(ManageWorkerWindow.this, "All workers have been removed!");
+        } else if (currentIndex >= currentList.size()) {
+            currentIndex = currentList.size() - 1;
+            displayPersonData(currentList.get(currentIndex));
+        } else {
+            displayPersonData(currentList.get(currentIndex));
+        }
+    }
+
+    public Integer tryParseInt(String value) {
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 
     public void handleSaveWorker() {
-        backButton.setVisible(false);
-        nextButton.setVisible(false);
-        manageWaitersButton.setVisible(false);
-        manageBossesButton.setVisible(false);
-        manageManagersButton.setVisible(false);
-        manageCooksButton.setVisible(false);
         name = nameField.getText().trim();
         surname = surnameField.getText().trim();
         ageText = ageField.getText().trim();
@@ -227,12 +229,17 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
             JOptionPane.showMessageDialog(this, "All fields must be filled.");
             return;
         }
-
-        int age = Integer.parseInt(ageText);
+        Integer age = tryParseInt(ageText);
+        if (age == null)
+        {
+            JOptionPane.showMessageDialog(ManageWorkerWindow.this, "Age must be a number!");
+            return;
+        }
         if (age <= 0 || age >= 100) {
             JOptionPane.showMessageDialog(this, "Age must be between 1 and 99.");
             return;
         }
+
         PositionEnum position = (PositionEnum) positionCombo.getSelectedItem();
         Person original = currentList.get(currentIndex);
         int id = original.getId();
@@ -245,52 +252,62 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         };
         currentList.set(currentIndex, updated);
         Person edited = currentList.get(currentIndex);
+        try {
+            objectOut.writeObject(SortEnum.SAVE);
+            objectOut.flush();
+            objectOut.writeObject(original);
+            objectOut.flush();
+            objectOut.writeObject(updated);
+            objectOut.flush();
+            objectOut.writeObject(currentList);
+            objectOut.flush();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(null, e);
+        }
+
         if (!original.getPosition().equals(updated.getPosition())) {
             currentList.remove(currentIndex);
-            try {
-                objectOut.writeObject(SortEnum.SAVE);
-                objectOut.flush();
-                objectOut.writeObject(original);
-                objectOut.flush();
-                objectOut.writeObject(updated);
-                objectOut.flush();
-                objectOut.writeObject(currentList);
-                objectOut.flush();
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, e);
-            }
             if (currentList.isEmpty()) {
                 clear();
             } else {
                 if (currentIndex >= currentList.size()) {
                     currentIndex = currentList.size() - 1;
+                    saveButton.setVisible(false);
                 }
                 displayPersonData(currentList.get(currentIndex));
             }
-
+            editable(false);
+            positionCombo.setEnabled(false);
+            visible(true);
+            saveButton.setVisible(false);
+            removeButton.setVisible(true);
             JOptionPane.showMessageDialog(this, "Worker has changed position. Refreshing list.");
             return;
         }
-
-        nameField.setEditable(false);
-        surnameField.setEditable(false);
-        ageField.setEditable(false);
         saveButton.setVisible(false);
-        backButton.setVisible(true);
-        nextButton.setVisible(true);
+        editable(false);
+        positionCombo.setEnabled(false);
+        removeButton.setVisible(true);
+        visible(true);
+        JOptionPane.showMessageDialog(this, "Worker saved!");
         displayPersonData(currentList.get(currentIndex));
-        manageWaitersButton.setVisible(true);
-        manageBossesButton.setVisible(true);
-        manageManagersButton.setVisible(true);
-        manageCooksButton.setVisible(true);
     }
 
+
+
     public void handleEditWorker() {
-        saveButton.setVisible(true);
-        nameField.setEditable(true);
-        surnameField.setEditable(true);
-        ageField.setEditable(true);
-        positionCombo.setEnabled(true);
+        if (currentList.isEmpty()) {
+            saveButton.setVisible(false);
+            enabled(false);
+            editable(false);
+        } else {
+            saveButton.setVisible(true);
+            enabled(true);
+            visible(false);
+            removeButton.setVisible(false);
+            editable(true);
+            positionCombo.setEnabled(true);
+        }
 
     }
 
@@ -298,9 +315,7 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         nameField.setText("");
         surnameField.setText("");
         ageField.setText("");
-        positionCombo.removeAllItems();
-        editButton.setEnabled(false);
-        removeButton.setEnabled(false);
+        positionCombo.setSelectedIndex(-1);
     }
 
     private void loadDate(SortEnum sort) {
@@ -310,12 +325,10 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
 
             if (!currentList.isEmpty()) {
                 displayPersonData(currentList.get(currentIndex));
-                editButton.setEnabled(true);
-                removeButton.setEnabled(true);
+                enabled(true);
             } else {
-                editButton.setEnabled(false);
-                removeButton.setEnabled(false);
                 clear();
+                enabled(false);
                 JOptionPane.showMessageDialog(this, "No " + sort.toString().toLowerCase() + "s found.");
             }
         } catch (Exception ex) {
@@ -347,5 +360,26 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
             ageField.setText(String.valueOf(person.getAge()));
             positionCombo.setSelectedItem(person.getPosition());
         }
+    }
+    public void visible(boolean visible) {
+        backButton.setVisible(visible);
+        nextButton.setVisible(visible);
+        manageWaitersButton.setVisible(visible);
+        manageBossesButton.setVisible(visible);
+        manageManagersButton.setVisible(visible);
+        manageCooksButton.setVisible(visible);
+    }
+
+    public void editable(boolean editable) {
+        ageField.setEditable(editable);
+        nameField.setEditable(editable);
+        surnameField.setEditable(editable);
+    }
+
+    public void enabled(boolean enabled) {
+        backButton.setEnabled(enabled);
+        nextButton.setEnabled(enabled);
+        editButton.setEnabled(enabled);
+        removeButton.setEnabled(enabled);
     }
 }

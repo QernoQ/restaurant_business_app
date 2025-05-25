@@ -1,6 +1,7 @@
 package GUI.boss;
 
 import model.*;
+import server.WindowManager;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -23,6 +24,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     public void init(JFrame parent) {
         setSize(800, 400);
         setLocationRelativeTo(parent);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(null);
         setResizable(false);
 
@@ -89,7 +91,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addButton) {
             handleAddWorker();
-
         }
     }
     private void handleAddWorker() {
@@ -122,7 +123,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             objectOut.flush();
             objectOut.writeObject(worker);
             objectOut.flush();
-            dispose();
+            clear();
 
             JOptionPane.showMessageDialog(AddWorkerWindow.this, "Worker Added!");
 
@@ -132,5 +133,10 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Something went wrong: " + ex.getMessage());
         }
+    }
+    public void clear() {
+        nameField.setText("");
+        surnameField.setText("");
+        ageField.setText("");
     }
 }

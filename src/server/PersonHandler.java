@@ -31,17 +31,17 @@ public class PersonHandler extends BaseHandler {
             while (true) {
                 Object input = objectIn.readObject();
 
-               if (input instanceof String cmd) {
+                if (input instanceof String cmd) {
                     handleStringCommand(cmd);
                     continue;
                 }
-               SortEnum sort;
-               if (input instanceof SortEnum s) {
-                   sort = s;
+                SortEnum sort;
+                if (input instanceof SortEnum s) {
+                    sort = s;
                 } else {
-                   serverGUI.displayMessage("[PERSON HANDLER] Unknown request type from client.");
-                   continue;
-               }
+                    serverGUI.displayMessage("[PERSON HANDLER] Unknown request type from client.");
+                    continue;
+                }
 
 
                 ArrayList<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
@@ -58,8 +58,7 @@ public class PersonHandler extends BaseHandler {
                 }
 
                 switch (sort) {
-                    case ADD ->
-                    {
+                    case ADD -> {
                         Object obj = objectIn.readObject();
                         String temp = readFromFile.readID();
                         int newID = Integer.parseInt(temp);
@@ -72,33 +71,37 @@ public class PersonHandler extends BaseHandler {
                         for (Boss b : bosses) {
                             serverGUI.displayMessage("Loaded Boss list " + b);
                         }
+                        serverGUI.displayMessage("-------------");
                     }
                     case MANAGER -> {
                         objectOut.writeObject(managers);
                         for (Manager m : managers) {
                             serverGUI.displayMessage("Loaded Manager list " + m);
                         }
+                        serverGUI.displayMessage("-------------");
                     }
                     case COOK -> {
                         objectOut.writeObject(cooks);
                         for (Cook c : cooks) {
                             serverGUI.displayMessage("Loaded Cook list " + c);
                         }
+                        serverGUI.displayMessage("-------------");
                     }
                     case WAITER -> {
                         objectOut.writeObject(waiters);
                         for (Waiter w : waiters) {
                             serverGUI.displayMessage("Loaded Waiter list " + w);
                         }
+                        serverGUI.displayMessage("-------------");
                     }
                     case SAVE -> {
-                        serverGUI.displayMessage("[PERSON HANDLER] Changed Worker from: " + objectIn.readObject() + "to: " +objectIn.readObject());
+                        serverGUI.displayMessage("[PERSON HANDLER] Changed Worker from: " + objectIn.readObject() + "to: " + objectIn.readObject());
                         ArrayList<Person> persons = (ArrayList<Person>) objectIn.readObject();
-                        Map<Integer,Person> map = new HashMap<>();
+                        Map<Integer, Person> map = new HashMap<>();
                         for (Person p : persons) {
                             map.put(p.getId(), p);
                         }
-                        for(Person p : allPersons) {
+                        for (Person p : allPersons) {
                             map.putIfAbsent(p.getId(), p);
                         }
                         persons.clear();
@@ -109,11 +112,17 @@ public class PersonHandler extends BaseHandler {
                     case REMOVE -> {
                         Person delete = (Person) objectIn.readObject();
                         serverGUI.displayMessage("[PERSON HANDLER] Removing " + delete);
-                        allPersons.remove(delete);
+                        allPersons.removeIf(p -> p.getId() == delete.getId());
+                        allPersons.sort((p1, p2) -> Integer.compare(p1.getId(), p2.getId()));
                         saveToFile.saveListToFile(allPersons);
                         String temp = readFromFile.readID();
                         int newID = Integer.parseInt(temp);
-                        saveToFile.saveID(String.valueOf(newID - 1));
+                        if (newID <= 0) {
+                            newID = 0;
+                        } else {
+                            newID = newID - 1;
+                        }
+                        saveToFile.saveID(String.valueOf(newID));
                     }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
@@ -121,6 +130,8 @@ public class PersonHandler extends BaseHandler {
             }
         } catch (IOException e) {
             serverGUI.displayMessage("[PERSON HANDLER] Client disconnected: " + socket.getRemoteSocketAddress());
+            WindowManager.closeAddWorker();
+            WindowManager.closeManageWorker();
         } catch (ClassNotFoundException e) {
             serverGUI.displayMessage("[PERSON HANDLER] Unknown object type received from client " + socket.getRemoteSocketAddress());
         } finally {
@@ -133,12 +144,25 @@ public class PersonHandler extends BaseHandler {
             }
         }
     }
+
     private void handleStringCommand(String cmd) throws IOException {
         switch (cmd) {
-            case "TRY_OPEN_ADD_WORKER" -> objectOut.writeBoolean(WindowManager.tryOpenAddWorker());
-            case "CLOSE_ADD_WORKER" -> WindowManager.closeAddWorker();
-            case "TRY_OPEN_MANAGE_WORKER" -> objectOut.writeBoolean(WindowManager.tryOpenManageWorker());
-            case "CLOSE_MANAGE_WORKER" -> WindowManager.closeManageWorker();
+            case "TRY_OPEN_ADD_WORKER" -> {
+                serverGUI.displayMessage("[PERSON HANDLER] Open Add Worker...");
+                objectOut.writeBoolean(WindowManager.tryOpenAddWorker());
+            }
+            case "CLOSE_ADD_WORKER" -> {
+                WindowManager.closeAddWorker();
+                serverGUI.displayMessage("[PERSON HANDLER] Close Add Worker...");
+            }
+            case "TRY_OPEN_MANAGE_WORKER" -> {
+                objectOut.writeBoolean(WindowManager.tryOpenManageWorker());
+                serverGUI.displayMessage("[PERSON HANDLER] Open Manage Worker...");
+            }
+            case "CLOSE_MANAGE_WORKER" -> {
+                WindowManager.closeManageWorker();
+                serverGUI.displayMessage("[PERSON HANDLER] Close Manage Worker...");
+            }
             default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown command: " + cmd);
         }
         objectOut.flush();

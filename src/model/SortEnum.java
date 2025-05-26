@@ -9,6 +9,12 @@ public enum SortEnum {
     COOK,
     WAITER,
     ADDBILL,
+    READBILL,
+    CLOSEBILL,
+    BACKBILL,
+    SAVEBILL,
+    BILL_CLOSED,
+
 
 
 

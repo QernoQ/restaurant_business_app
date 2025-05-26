@@ -13,6 +13,17 @@ public class Bill implements Serializable {
         this.billId = billId;
     }
 
+    public int getBillId() {
+        return billId;
+    }
+    public List<Food> getCurrentOrder() {
+        return (List<Food>) currentOrder;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
     @Override
     public String toString() {
         return currentOrder.toString() + " Id: " + billId + " Active: " + active;

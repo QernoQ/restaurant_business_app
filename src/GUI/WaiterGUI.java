@@ -1,6 +1,7 @@
 package GUI;
 
 import GUI.waiter.AddBillWindow;
+import GUI.waiter.CurrentBillWindow;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,13 +11,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class WaiterGUI extends BaseGUI implements ActionListener {
 
     protected ObjectOutputStream objectOut;
     protected ObjectInputStream objectIn;
 
-    private JButton AddBill,ManageBill;
+    private JButton AddBill, CurrentBill;
 
     public WaiterGUI(String title, Socket socket) throws IOException {
         super(title, socket);
@@ -45,23 +47,23 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
         titlePanel.add(titleLabel, BorderLayout.CENTER);
 
         AddBill = new JButton("Add Bill");
-        ManageBill = new JButton("Manage Bills");
+        CurrentBill = new JButton("Current Bills");
 
         Font buttonFont = new Font("Serif", Font.BOLD, 18);
         AddBill.setFont(buttonFont);
-        ManageBill.setFont(buttonFont);
+        CurrentBill.setFont(buttonFont);
 
         JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 35, 10, 35));
         buttonPanel.setBackground(Color.DARK_GRAY);
         buttonPanel.add(AddBill);
-        buttonPanel.add(ManageBill);
+        buttonPanel.add(CurrentBill);
         AddBill.addActionListener(this);
-        ManageBill.addActionListener(this);
+        CurrentBill.addActionListener(this);
 
         BossContainer.add(titlePanel, BorderLayout.NORTH);
         BossContainer.add(buttonPanel, BorderLayout.CENTER);
-        styleButton(ManageBill);
+        styleButton(CurrentBill);
         styleButton(AddBill);
 
         setVisible(true);
@@ -73,7 +75,8 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
         if (src == AddBill) {
             new AddBillWindow(WaiterGUI.this,this,objectOut,objectIn);
 
-        } else if (src == ManageBill) {
+        } else if (src == CurrentBill) {
+            new CurrentBillWindow(WaiterGUI.this,this,objectOut,objectIn);
 
         }
 

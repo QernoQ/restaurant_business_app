@@ -10,7 +10,7 @@ import java.io.*;
 import java.net.Socket;
 
 public class ClientGUI extends BaseGUI implements ActionListener {
-    private JButton loginButton;
+    private JButton loginButton,test1,test2;
     private JTextField loginTextField;
 
     public ClientGUI(String title, Socket socket) {

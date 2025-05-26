@@ -5,6 +5,7 @@ import model.Person;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ReadFromFile implements Serializable {
     private final Socket socket;
@@ -17,20 +18,18 @@ public class ReadFromFile implements Serializable {
 
     }
 
-    public ArrayList<Person> readObjectsFromFile(String fileName) {
-        ArrayList<Person> persons = new ArrayList<Person>();
+    public List<Object> readObjectsFromFile(String fileName) {
+        List<Object> currentList = new ArrayList<>();
         File file = new File(fileName);
         if (!file.exists()) {
             serverGui.displayMessage("[READFROMFILE] File not found: " + fileName);
-            return persons;
+            return currentList;
         }
         try (ObjectInputStream readObject = new ObjectInputStream(new FileInputStream(fileName))) {
             while (true) {
                 try {
                     Object obj = readObject.readObject();
-                    if (obj instanceof Person) {
-                        persons.add((Person) obj);
-                    }
+                        currentList.add(obj);
                 } catch (EOFException eof) {
                     break;
                 }
@@ -38,7 +37,7 @@ public class ReadFromFile implements Serializable {
         } catch (IOException | ClassNotFoundException e) {
             serverGui.displayMessage("Failed to read file: " + e.toString());
         }
-        return persons;
+        return currentList;
     }
 
     public String readID(String fileName) {

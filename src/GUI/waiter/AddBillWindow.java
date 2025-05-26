@@ -26,11 +26,11 @@ public class AddBillWindow extends JDialog implements ActionListener {
     private JTextArea orderDisplay;
     private List<Food> currentOrder;
     private double totalPrice;
-    JButton removeLastButton,finishButton,clearButton;
+    JButton removeLastButton, finishButton, clearButton,saveButton;
     private WaiterGUI waiterGUI;
 
-    public AddBillWindow(WaiterGUI waiterGUI,JFrame parent, ObjectOutputStream objectOut,ObjectInputStream objectIn) {
-        super(parent, "Add Bill", true);
+    public AddBillWindow(WaiterGUI waiterGUI, Window parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
+        super((JFrame) parent, "Add Bill", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
         this.waiterGUI = waiterGUI;
@@ -39,10 +39,11 @@ public class AddBillWindow extends JDialog implements ActionListener {
         init(parent);
     }
 
-    public void init(JFrame parent) {
+    public void init(Window parent) {
         setTitle("Add Bill");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
+        setResizable(false);
 
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
@@ -71,9 +72,14 @@ public class AddBillWindow extends JDialog implements ActionListener {
         removeLastButton.addActionListener(this);
         buttonPanel.add(removeLastButton);
 
+
         clearButton = new JButton("Clear All");
         clearButton.addActionListener(this);
         buttonPanel.add(clearButton);
+
+        saveButton = new JButton("Save Bill");
+        saveButton.addActionListener(this);
+        buttonPanel.add(saveButton);
 
         orderPanel.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -89,9 +95,19 @@ public class AddBillWindow extends JDialog implements ActionListener {
         waiterGUI.styleButton(finishButton);
         waiterGUI.styleButton(removeLastButton);
         waiterGUI.styleButton(clearButton);
+        waiterGUI.styleButton(saveButton);
         buttonPanel.setBackground(Color.darkGray);
+        if(parent instanceof ManageBillWindow) {
+            finishButton.setEnabled(false);
+            for(Food food : currentOrder) {
+                addToOrder(food);
+            }
+        } else {
+            saveButton.setEnabled(false);
+        }
         setVisible(true);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
@@ -102,6 +118,8 @@ public class AddBillWindow extends JDialog implements ActionListener {
             removeLastItem();
         } else if (source == finishButton) {
             finishOrder();
+        } else if (source == saveButton) {
+            dispose();
         }
 
     }
@@ -111,7 +129,7 @@ public class AddBillWindow extends JDialog implements ActionListener {
         categoryPanel.setLayout(new BorderLayout());
         categoryPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         categoryPanel.setBackground(Color.darkGray);
-        JLabel label = new JLabel("📋 "+ category.name().replace("_", " "), SwingConstants.CENTER);
+        JLabel label = new JLabel("📋 " + category.name().replace("_", " "), SwingConstants.CENTER);
         label.setFont(new Font("Serif", Font.BOLD, 18));
         label.setOpaque(true);
         label.setBackground(new Color(14, 94, 36));
@@ -165,16 +183,20 @@ public class AddBillWindow extends JDialog implements ActionListener {
         }
     }
 
+    public List<Food> getCurrentOrder() {
+        return currentOrder;
+    }
+
     private void finishOrder() {
         try {
             objectOut.writeObject(SortEnum.ADDBILL);
-            int id =  (int) objectIn.readObject();
-            objectOut.writeObject(new Bill(true,currentOrder,id));
-            JOptionPane.showMessageDialog(this,"Order finished! Total price: " + totalPrice + " $!");
+            int id = (int) objectIn.readObject();
+            objectOut.writeObject(new Bill(true, currentOrder, id));
+            JOptionPane.showMessageDialog(this, "Order finished! Total price: " + totalPrice + " $!");
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,e);
+            JOptionPane.showMessageDialog(null, e);
         } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(null,e);
+            JOptionPane.showMessageDialog(null, e);
         }
         dispose();
     }

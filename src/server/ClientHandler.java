@@ -14,6 +14,7 @@ public class ClientHandler extends BaseHandler {
     private ObjectInputStream objectIn;
     private SaveToFile saveToFile;
     private ReadFromFile readFromFile;
+    private Bill bill;
 
     public ClientHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
@@ -45,13 +46,22 @@ public class ClientHandler extends BaseHandler {
                 }
 
 
-                List<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser");
+                List<Person> allPersons = readFromFile.readObjectsFromFile("Workers.ser")
+                        .stream()
+                        .filter(obj -> obj instanceof Person)
+                        .map(obj -> (Person) obj)
+                        .toList();
                 List<Boss> bosses = new ArrayList<>();
                 List<Manager> managers = new ArrayList<>();
                 List<Cook> cooks = new ArrayList<>();
                 List<Waiter> waiters = new ArrayList<>();
+                List<Bill> readBill = readFromFile.readObjectsFromFile("bills.ser")
+                        .stream()
+                        .filter(obj -> obj instanceof Bill)
+                        .map(obj -> (Bill) obj)
+                        .toList();
 
-                for (Person p : allPersons) {
+                for (Object p : allPersons) {
                     if (p instanceof Boss b) bosses.add(b);
                     else if (p instanceof Manager m) managers.add(m);
                     else if (p instanceof Cook c) cooks.add(c);
@@ -69,6 +79,7 @@ public class ClientHandler extends BaseHandler {
                     }
                     case BOSS -> {
                         objectOut.writeObject(bosses);
+                        objectOut.flush();
                         for (Boss b : bosses) {
                             serverGUI.displayMessage("Loaded Boss list " + b);
                         }
@@ -76,6 +87,7 @@ public class ClientHandler extends BaseHandler {
                     }
                     case MANAGER -> {
                         objectOut.writeObject(managers);
+                        objectOut.flush();
                         for (Manager m : managers) {
                             serverGUI.displayMessage("Loaded Manager list " + m);
                         }
@@ -83,6 +95,7 @@ public class ClientHandler extends BaseHandler {
                     }
                     case COOK -> {
                         objectOut.writeObject(cooks);
+                        objectOut.flush();
                         for (Cook c : cooks) {
                             serverGUI.displayMessage("Loaded Cook list " + c);
                         }
@@ -90,6 +103,7 @@ public class ClientHandler extends BaseHandler {
                     }
                     case WAITER -> {
                         objectOut.writeObject(waiters);
+                        objectOut.flush();
                         for (Waiter w : waiters) {
                             serverGUI.displayMessage("Loaded Waiter list " + w);
                         }
@@ -97,7 +111,7 @@ public class ClientHandler extends BaseHandler {
                     }
                     case SAVE -> {
                         serverGUI.displayMessage("[PERSON HANDLER] Changed Worker from: " + objectIn.readObject() + "to: " + objectIn.readObject());
-                        List<Person> persons = (ArrayList<Person>) objectIn.readObject();
+                        List<Person> persons = (List<Person>) objectIn.readObject();
                         Map<Integer, Person> map = new HashMap<>();
                         for (Person p : persons) {
                             map.put(p.getId(), p);
@@ -131,10 +145,34 @@ public class ClientHandler extends BaseHandler {
                         int currentId = Integer.parseInt(temp);
                         int nextID = currentId + 1;
                         objectOut.writeObject(nextID);
-                        Bill bill = (Bill) objectIn.readObject();
+                        bill = (Bill) objectIn.readObject();
                         serverGUI.displayMessage("[PERSON HANDLER] Added bill:  " + bill);
                         saveToFile.saveID(String.valueOf(nextID),"billid.txt");
                         saveToFile.saveObjectToFile(bill,"bills.ser");
+                    }
+                    case READBILL ->
+                    {
+                        serverGUI.displayMessage("[PERSON HANDLER] Reading Bill");
+                        objectOut.writeObject(readBill);
+                        objectOut.flush();
+                    }
+                    case CLOSEBILL ->
+                    {
+                        serverGUI.displayMessage("[PERSON HANDLER] CLOSEBILL received from client.");
+                        bill = (Bill) objectIn.readObject();
+                        saveBill(readBill);
+                        objectOut.writeObject(SortEnum.BILL_CLOSED);
+                        objectOut.flush();
+                        serverGUI.displayMessage("[PERSON HANDLER] Closing Bill!");
+                    }
+                    case BACKBILL ->
+                    {
+                        serverGUI.displayMessage("[PERSON HANDLER] BACKBILL received from client.");
+                        bill = (Bill) objectIn.readObject();
+                        saveBill(readBill);
+                        objectOut.writeObject(SortEnum.BILL_CLOSED);
+                        objectOut.flush();
+                        serverGUI.displayMessage("[PERSON HANDLER] User go back to all bills (bill not closed)!");
                     }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
@@ -156,7 +194,14 @@ public class ClientHandler extends BaseHandler {
             }
         }
     }
-
+    public void saveBill(List<Bill> bills) {
+        List<Bill> modifiableBills = new ArrayList<>(bills);
+        modifiableBills.removeIf(b -> b.getBillId() == bill.getBillId());
+        modifiableBills.add(bill);
+        modifiableBills.sort((b1, b2) -> Integer.compare(b1.getBillId(), b2.getBillId()));
+        saveToFile.saveListToFile(modifiableBills,"bills.ser");
+        serverGUI.displayMessage("[PERSON HANDLER] Bill save succesful!");
+    }
     private void handleStringCommand(String cmd) throws IOException {
         switch (cmd) {
             case "TRY_OPEN_ADD_WORKER" -> {

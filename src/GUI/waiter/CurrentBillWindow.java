@@ -83,10 +83,25 @@ public class CurrentBillWindow extends JDialog {
         button.setPreferredSize(new Dimension(200, 100));
         mainPanel.add(button);
         button.addActionListener(e -> {
-            foodList = bill.getCurrentOrder();
-            foodID = bill.getBillId();
+            try {
+                objectOut.writeObject("TRY_LOCK_BILL");
+                objectOut.flush();
+                objectOut.writeInt(bill.getBillId());
+                objectOut.flush();
+                SortEnum response = (SortEnum) objectIn.readObject();
 
-            new ManageBillWindow(this,waiterGUI,objectOut, objectIn, foodList, foodID,button,addBillWindow = new AddBillWindow(waiterGUI, objectOut, objectIn,false,true));
+                if(response == SortEnum.BILL_LOCK_SUCCESS) {
+                    foodList = bill.getCurrentOrder();
+                    foodID = bill.getBillId();
+                    new ManageBillWindow(this,waiterGUI,objectOut, objectIn, foodList, foodID,button,addBillWindow = new AddBillWindow(waiterGUI, objectOut, objectIn,false,true));
+                } else if(response == SortEnum.BILL_ALREADY_LOCKED) {
+                    JOptionPane.showMessageDialog(this, "This bill is currently being edited by another waiter.");
+                }
+            } catch (IOException | ClassNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Error while trying to open the bill: " + ex.getMessage());
+            }
+
+
         });
     }
 

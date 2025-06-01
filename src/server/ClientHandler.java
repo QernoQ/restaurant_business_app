@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ClientHandler extends BaseHandler {
     private ObjectOutputStream objectOut;
@@ -15,6 +16,7 @@ public class ClientHandler extends BaseHandler {
     private SaveToFile saveToFile;
     private ReadFromFile readFromFile;
     private Bill bill;
+    private static final Map<Integer, Boolean> lockedBills = new ConcurrentHashMap<>();
 
     public ClientHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
@@ -164,6 +166,9 @@ public class ClientHandler extends BaseHandler {
                         objectOut.writeObject(SortEnum.BILL_CLOSED);
                         objectOut.flush();
                         serverGUI.displayMessage("[PERSON HANDLER] Closing Bill!");
+                        int billId = (int) objectIn.readInt();
+                        lockedBills.remove(billId);
+                        serverGUI.displayMessage(billId + " removed from map");
                     }
                     case BACKBILL ->
                     {
@@ -173,6 +178,9 @@ public class ClientHandler extends BaseHandler {
                         objectOut.writeObject(SortEnum.BILL_CLOSED);
                         objectOut.flush();
                         serverGUI.displayMessage("[PERSON HANDLER] User go back to all bills (bill not closed)!");
+                        int billId = (int) objectIn.readInt();
+                        lockedBills.remove(billId);
+                        serverGUI.displayMessage("Bill: " + billId  + " has been unlocked.");
                     }
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
@@ -219,6 +227,17 @@ public class ClientHandler extends BaseHandler {
             case "CLOSE_MANAGE_WORKER" -> {
                 WindowManager.closeManageWorker();
                 serverGUI.displayMessage("[PERSON HANDLER] Close Manage Worker...");
+            }
+            case "TRY_LOCK_BILL" -> {
+                int billId = (int) objectIn.readInt();
+                if(lockedBills.getOrDefault(billId,false)){
+                    objectOut.writeObject(SortEnum.BILL_ALREADY_LOCKED);
+                    serverGUI.displayMessage("Bill: " + billId  +" already locked.");
+                } else {
+                    lockedBills.put(billId,true);
+                    objectOut.writeObject(SortEnum.BILL_LOCK_SUCCESS);
+                    serverGUI.displayMessage("Bill: " + billId + " has been locked.");
+                }
             }
             default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown command: " + cmd);
         }

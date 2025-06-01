@@ -41,7 +41,7 @@ public class ManageBillWindow extends JDialog implements ActionListener {
 
     private void init() {
         setTitle("Manage Bill");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
 
@@ -162,8 +162,15 @@ public class ManageBillWindow extends JDialog implements ActionListener {
     public void check() {
         try {
             Object response = objectIn.readObject();
+            try {
+                objectOut.writeInt(billID);
+                objectOut.flush();
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Failed to unlock bill: " + ex.getMessage());
+            }
             if (response instanceof SortEnum) {
                 dispose();
+
             }
         } catch (ClassNotFoundException | IOException ex) {
             JOptionPane.showMessageDialog(null, "Error reading Bill", "Error", JOptionPane.ERROR_MESSAGE);

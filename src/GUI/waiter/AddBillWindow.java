@@ -47,7 +47,7 @@ public class AddBillWindow extends JDialog implements ActionListener {
 
 
         setTitle("Add Bill");
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
 

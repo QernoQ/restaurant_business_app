@@ -14,6 +14,9 @@ public enum SortEnum {
     BACKBILL,
     SAVEBILL,
     BILL_CLOSED,
+    BILL_ALREADY_LOCKED,
+    BILL_LOCK_SUCCESS,
+
 
 
 

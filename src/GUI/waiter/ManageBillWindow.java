@@ -23,14 +23,19 @@ public class ManageBillWindow extends JDialog implements ActionListener {
     private int billID;
     private JButton billButton;
 
-    public ManageBillWindow(WaiterGUI waiterGUI, Window parent, ObjectOutputStream objectOut, ObjectInputStream objectIn, List<Food> foodList, int billID,JButton button) {
-        super((Window) parent, "Manage Bill", ModalityType.APPLICATION_MODAL);
+    private Window rootParent;
+    private AddBillWindow addBillWindow;
+
+    public ManageBillWindow(Window parent,WaiterGUI waiterGUI, ObjectOutputStream objectOut, ObjectInputStream objectIn, List<Food> foodList, int billID,JButton button,AddBillWindow addBillWindow) {
+        super(parent, "Manage Bill", ModalityType.APPLICATION_MODAL);
         this.waiterGUI = waiterGUI;
         this.objectOut = objectOut;
+        this.rootParent = parent;
         this.objectIn = objectIn;
         this.foodList = foodList;
         this.billID = billID;
         this.billButton = button;
+        this.addBillWindow = addBillWindow;
         init();
     }
 
@@ -108,7 +113,7 @@ public class ManageBillWindow extends JDialog implements ActionListener {
     }
 
     public void addMenuItem() {
-        AddBillWindow addBillWindow = new AddBillWindow(waiterGUI, this, objectOut, objectIn);
+        addBillWindow.setVisible(true);
         List<Food> tempList = addBillWindow.getCurrentOrder();
         for (Food f : tempList) {
             foodList.add(f);

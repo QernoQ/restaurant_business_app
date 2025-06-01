@@ -1,21 +1,17 @@
 package GUI.waiter;
 
 import GUI.WaiterGUI;
-import GUI.boss.ManageWorkerWindow;
 import model.Bill;
 import model.Food;
-import model.Person;
 import model.SortEnum;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CurrentBillWindow extends JDialog {
@@ -26,12 +22,13 @@ public class CurrentBillWindow extends JDialog {
     private List<Food> foodList;
     private List<Bill> billRecived;
     private int foodID;
+    private AddBillWindow addBillWindow;
 
-    public CurrentBillWindow(WaiterGUI waiterGUI, Window parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
-        super((JFrame) parent, "Add Bill", true);
+    public CurrentBillWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
+        super(parent, "Add Bill", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
-        this.waiterGUI = waiterGUI;
+        this.waiterGUI = (WaiterGUI) parent;
         init(parent);
     }
 
@@ -88,7 +85,8 @@ public class CurrentBillWindow extends JDialog {
         button.addActionListener(e -> {
             foodList = bill.getCurrentOrder();
             foodID = bill.getBillId();
-            new ManageBillWindow(waiterGUI, this, objectOut, objectIn, foodList, foodID,button);
+
+            new ManageBillWindow(this,waiterGUI,objectOut, objectIn, foodList, foodID,button,addBillWindow = new AddBillWindow(waiterGUI, objectOut, objectIn,false,true));
         });
     }
 

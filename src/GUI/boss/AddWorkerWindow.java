@@ -113,14 +113,26 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             String surname = surnameField.getText().trim();
             String ageText = ageField.getText().trim();
 
-            if (name.isEmpty() || surname.isEmpty() || ageText.isEmpty()) {
+            if (name.isEmpty() || surname.isEmpty() || ageText.isEmpty())  {
                 JOptionPane.showMessageDialog(this, "All fields must be filled.");
+                return;
+            }
+            if (name.matches(".*\\d+.*") || surname.matches(".*\\d+.*"))  {
+                JOptionPane.showMessageDialog(this, "Name and Surname cannot contain numbers!");
+                return;
+            }
+            int confirmation = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to add worker: "+ name + " " + surname + " " + ageText + " ?",
+                    "Confirm add",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirmation != JOptionPane.YES_OPTION) {
                 return;
             }
 
             int age = Integer.parseInt(ageText);
-            if (age <= 0 || age >= 100) {
-                JOptionPane.showMessageDialog(this, "Age must be between 1 and 99.");
+            if (age <= 17 || age >= 100) {
+                JOptionPane.showMessageDialog(this, "Age must be between 18 and 99.");
                 return;
             }
 

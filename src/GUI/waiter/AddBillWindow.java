@@ -28,18 +28,24 @@ public class AddBillWindow extends JDialog implements ActionListener {
     private double totalPrice;
     JButton removeLastButton, finishButton, clearButton,saveButton;
     private WaiterGUI waiterGUI;
+    private boolean visible;
+    private boolean buttonsManage;
 
-    public AddBillWindow(WaiterGUI waiterGUI, Window parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
-        super((JFrame) parent, "Add Bill", true);
+    public AddBillWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn,boolean visible,boolean buttonsManage) {
+        super(parent, "Add Bill", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
-        this.waiterGUI = waiterGUI;
+        this.waiterGUI = (WaiterGUI) parent;
         this.currentOrder = new ArrayList<>();
         this.totalPrice = 0.0;
+        this.visible = visible;
+        this.buttonsManage = buttonsManage;
         init(parent);
     }
 
     public void init(Window parent) {
+
+
         setTitle("Add Bill");
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -97,15 +103,18 @@ public class AddBillWindow extends JDialog implements ActionListener {
         waiterGUI.styleButton(clearButton);
         waiterGUI.styleButton(saveButton);
         buttonPanel.setBackground(Color.darkGray);
-        if(parent instanceof ManageBillWindow) {
+        if (buttonsManage) {
             finishButton.setEnabled(false);
-            for(Food food : currentOrder) {
-                addToOrder(food);
-            }
+            removeLastButton.setEnabled(false);
+            clearButton.setEnabled(false);
+            saveButton.setEnabled(true);
         } else {
+            finishButton.setEnabled(true);
+            removeLastButton.setEnabled(true);
+            clearButton.setEnabled(true);
             saveButton.setEnabled(false);
         }
-        setVisible(true);
+        setVisible(visible);
     }
 
     @Override

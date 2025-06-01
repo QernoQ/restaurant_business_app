@@ -18,6 +18,7 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
     protected ObjectOutputStream objectOut;
     protected ObjectInputStream objectIn;
 
+
     private JButton AddBill, CurrentBill;
 
     public WaiterGUI(String title, Socket socket) throws IOException {
@@ -66,6 +67,7 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
         styleButton(CurrentBill);
         styleButton(AddBill);
 
+
         setVisible(true);
     }
 
@@ -73,10 +75,10 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         Object src = e.getSource();
         if (src == AddBill) {
-            new AddBillWindow(WaiterGUI.this,this,objectOut,objectIn);
+            new AddBillWindow(this,objectOut,objectIn,true,false);
 
         } else if (src == CurrentBill) {
-            new CurrentBillWindow(WaiterGUI.this,this,objectOut,objectIn);
+            new CurrentBillWindow(this,objectOut,objectIn);
 
         }
 

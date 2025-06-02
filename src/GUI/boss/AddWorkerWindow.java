@@ -140,7 +140,6 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             int id = 0;
             Object worker = switch (Objects.requireNonNull(position)) {
                 case Boss -> new Boss(name, surname, age, id, position);
-                case Manager -> new Manager(name, surname, age, id, position);
                 case Cook -> new Cook(name, surname, age, id, position);
                 case Waiter -> new Waiter(name, surname, age, id, position);
             };

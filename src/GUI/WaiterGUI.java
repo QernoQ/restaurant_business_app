@@ -30,8 +30,8 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
 
     @Override
     protected void init() {
-        Container BossContainer = getContentPane();
-        BossContainer.setLayout(new BorderLayout());
+        Container WaiterContainer = getContentPane();
+        WaiterContainer.setLayout(new BorderLayout());
         setSize(400, 250);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -62,8 +62,8 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
         AddBill.addActionListener(this);
         CurrentBill.addActionListener(this);
 
-        BossContainer.add(titlePanel, BorderLayout.NORTH);
-        BossContainer.add(buttonPanel, BorderLayout.CENTER);
+        WaiterContainer.add(titlePanel, BorderLayout.NORTH);
+        WaiterContainer.add(buttonPanel, BorderLayout.CENTER);
         styleButton(CurrentBill);
         styleButton(AddBill);
 

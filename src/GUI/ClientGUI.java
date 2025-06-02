@@ -98,10 +98,6 @@ public class ClientGUI extends BaseGUI implements ActionListener {
                             dispose();
                             new BossGUI("Boss Menu", socket);
                             break;
-                        case "manager":
-                            dispose();
-                            new ManagerGUI("Manager Menu", socket);
-                            break;
                         case "cook":
                             dispose();
                             new CookGUI("Cook Menu", socket);

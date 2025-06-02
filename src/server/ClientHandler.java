@@ -54,7 +54,6 @@ public class ClientHandler extends BaseHandler {
                         .map(obj -> (Person) obj)
                         .toList();
                 List<Boss> bosses = new ArrayList<>();
-                List<Manager> managers = new ArrayList<>();
                 List<Cook> cooks = new ArrayList<>();
                 List<Waiter> waiters = new ArrayList<>();
                 List<Bill> readBill = readFromFile.readObjectsFromFile("bills.ser")
@@ -65,7 +64,6 @@ public class ClientHandler extends BaseHandler {
 
                 for (Object p : allPersons) {
                     if (p instanceof Boss b) bosses.add(b);
-                    else if (p instanceof Manager m) managers.add(m);
                     else if (p instanceof Cook c) cooks.add(c);
                     else if (p instanceof Waiter w) waiters.add(w);
                 }
@@ -84,14 +82,6 @@ public class ClientHandler extends BaseHandler {
                         objectOut.flush();
                         for (Boss b : bosses) {
                             serverGUI.displayMessage("Loaded Boss list " + b);
-                        }
-                        serverGUI.displayMessage("-------------");
-                    }
-                    case MANAGER -> {
-                        objectOut.writeObject(managers);
-                        objectOut.flush();
-                        for (Manager m : managers) {
-                            serverGUI.displayMessage("Loaded Manager list " + m);
                         }
                         serverGUI.displayMessage("-------------");
                     }

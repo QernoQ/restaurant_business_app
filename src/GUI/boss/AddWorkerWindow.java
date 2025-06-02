@@ -121,18 +121,17 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
                 JOptionPane.showMessageDialog(this, "Name and Surname cannot contain numbers!");
                 return;
             }
+            int age = Integer.parseInt(ageText);
+            if (age <= 17 || age >= 100) {
+                JOptionPane.showMessageDialog(this, "Age must be between 18 and 99.");
+                return;
+            }
             int confirmation = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to add worker: "+ name + " " + surname + " " + ageText + " ?",
                     "Confirm add",
                     JOptionPane.YES_NO_OPTION);
 
             if (confirmation != JOptionPane.YES_OPTION) {
-                return;
-            }
-
-            int age = Integer.parseInt(ageText);
-            if (age <= 17 || age >= 100) {
-                JOptionPane.showMessageDialog(this, "Age must be between 18 and 99.");
                 return;
             }
 

@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class ManageWorkerWindow extends JDialog implements ActionListener {
     private JButton editButton, removeButton;
-    private JButton manageBossesButton, manageManagersButton, manageCooksButton, manageWaitersButton, backButton, nextButton, saveButton;
+    private JButton manageBossesButton, manageCooksButton, manageWaitersButton, backButton, nextButton, saveButton;
     private JTextField nameField, surnameField, ageField;
     JComboBox<PositionEnum> positionCombo;
     private ObjectOutputStream objectOut;
@@ -47,24 +47,21 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         setResizable(false);
         getContentPane().setBackground(Color.DARK_GRAY);
         getContentPane().setForeground(Color.white);
+
         manageBossesButton = new JButton("Manage Bosses");
-        manageBossesButton.setBounds(50, 20, 150, 35);
+        manageBossesButton.setBounds(155, 20, 150, 35);
         add(manageBossesButton);
 
-        manageManagersButton = new JButton("Manage Managers");
-        manageManagersButton.setBounds(220, 20, 150, 35);
-        add(manageManagersButton);
-
         manageCooksButton = new JButton("Manage Cooks");
-        manageCooksButton.setBounds(390, 20, 150, 35);
+        manageCooksButton.setBounds(325, 20, 150, 35);
         add(manageCooksButton);
 
         manageWaitersButton = new JButton("Manage Waiters");
-        manageWaitersButton.setBounds(560, 20, 150, 35);
+        manageWaitersButton.setBounds(495, 20, 150, 35);
         add(manageWaitersButton);
 
+
         manageBossesButton.addActionListener(this);
-        manageManagersButton.addActionListener(this);
         manageCooksButton.addActionListener(this);
         manageWaitersButton.addActionListener(this);
 
@@ -148,7 +145,6 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         bossGUI.styleButton(nextButton);
         bossGUI.styleButton(backButton);
         bossGUI.styleButton(manageBossesButton);
-        bossGUI.styleButton(manageManagersButton);
         bossGUI.styleButton(manageCooksButton);
         bossGUI.styleButton(manageWaitersButton);
 
@@ -173,9 +169,6 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         SortEnum sort = null;
         if (source == manageBossesButton) {
             sort = SortEnum.BOSS;
-            loadDate(sort);
-        } else if (source == manageManagersButton) {
-            sort = SortEnum.MANAGER;
             loadDate(sort);
         } else if (source == manageCooksButton) {
             sort = SortEnum.COOK;
@@ -391,7 +384,6 @@ public class ManageWorkerWindow extends JDialog implements ActionListener {
         nextButton.setVisible(visible);
         manageWaitersButton.setVisible(visible);
         manageBossesButton.setVisible(visible);
-        manageManagersButton.setVisible(visible);
         manageCooksButton.setVisible(visible);
     }
 

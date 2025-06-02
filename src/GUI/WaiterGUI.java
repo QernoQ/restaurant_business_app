@@ -15,16 +15,10 @@ import java.util.ArrayList;
 
 public class WaiterGUI extends BaseGUI implements ActionListener {
 
-    protected ObjectOutputStream objectOut;
-    protected ObjectInputStream objectIn;
-
-
-    private JButton AddBill, CurrentBill;
+    private JButton AddBill, CurrentBill,goBackButton;
 
     public WaiterGUI(String title, Socket socket) throws IOException {
         super(title, socket);
-        this.objectOut = new ObjectOutputStream(socket.getOutputStream());
-        this.objectIn = new ObjectInputStream(socket.getInputStream());
         init();
     }
 
@@ -49,23 +43,28 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
 
         AddBill = new JButton("Add Bill");
         CurrentBill = new JButton("Current Bills");
+        goBackButton = new JButton("Go Back");
 
         Font buttonFont = new Font("Serif", Font.BOLD, 18);
         AddBill.setFont(buttonFont);
         CurrentBill.setFont(buttonFont);
+        goBackButton.setFont(buttonFont);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 35, 10, 35));
         buttonPanel.setBackground(Color.DARK_GRAY);
         buttonPanel.add(AddBill);
         buttonPanel.add(CurrentBill);
+        buttonPanel.add(goBackButton);
         AddBill.addActionListener(this);
         CurrentBill.addActionListener(this);
+        goBackButton.addActionListener(this);
 
         WaiterContainer.add(titlePanel, BorderLayout.NORTH);
         WaiterContainer.add(buttonPanel, BorderLayout.CENTER);
         styleButton(CurrentBill);
         styleButton(AddBill);
+        styleButton(goBackButton);
 
 
         setVisible(true);
@@ -80,6 +79,14 @@ public class WaiterGUI extends BaseGUI implements ActionListener {
         } else if (src == CurrentBill) {
             new CurrentBillWindow(this,objectOut,objectIn);
 
+        } else if (src == goBackButton) {
+            dispose();
+            try {
+                socket = new Socket(serverIP,serverPort);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+            new ClientGUI("Restaurant Management Application",socket);
         }
 
     }

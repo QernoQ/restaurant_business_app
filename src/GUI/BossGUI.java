@@ -12,16 +12,12 @@ import java.io.*;
 import java.net.Socket;
 
 public class BossGUI extends BaseGUI implements ActionListener {
-    protected ObjectOutputStream objectOut;
-    protected ObjectInputStream objectIn;
-    JButton AddWorker, ManageWorker;
+    JButton AddWorker, ManageWorker,goBackButton;
     private AddWorkerWindow addWorkerWindow = null;
     private ManageWorkerWindow manageWorkerWindow = null;
 
     public BossGUI(String title, Socket socket) throws IOException {
         super(title, socket);
-        this.objectOut = new ObjectOutputStream(socket.getOutputStream());
-        this.objectIn = new ObjectInputStream(socket.getInputStream());
         init();
     }
 
@@ -46,23 +42,28 @@ public class BossGUI extends BaseGUI implements ActionListener {
 
         AddWorker = new JButton("Add Worker");
         ManageWorker = new JButton("Manage Workers");
+        goBackButton = new JButton("Go Back");
 
         Font buttonFont = new Font("Serif", Font.BOLD, 18);
         AddWorker.setFont(buttonFont);
         ManageWorker.setFont(buttonFont);
+        goBackButton.setFont(buttonFont);
 
-        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(3, 1, 10, 10));
         buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 35, 10, 35));
         buttonPanel.setBackground(Color.DARK_GRAY);
         buttonPanel.add(AddWorker);
         buttonPanel.add(ManageWorker);
+        buttonPanel.add(goBackButton);
         AddWorker.addActionListener(this);
         ManageWorker.addActionListener(this);
+        goBackButton.addActionListener(this);
 
         BossContainer.add(titlePanel, BorderLayout.NORTH);
         BossContainer.add(buttonPanel, BorderLayout.CENTER);
         styleButton(AddWorker);
         styleButton(ManageWorker);
+        styleButton(goBackButton);
         style(titleLabel, labelFont, labelColor, labelBg);
 
         setVisible(true);
@@ -101,6 +102,14 @@ public class BossGUI extends BaseGUI implements ActionListener {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
 
+        } else if (source == goBackButton) {
+            dispose();
+            try {
+                socket = new Socket(serverIP,serverPort);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            new ClientGUI("Restaurant Management Application",socket);
         }
     }
 }

@@ -15,14 +15,20 @@ public abstract class BaseGUI extends JFrame {
     public Color inputBg = new Color(60, 60, 60);
     public Color labelBg = new Color(100, 100, 100);
 
+    protected ObjectOutputStream objectOut;
+    protected ObjectInputStream objectIn;
+
+    public static final int serverPort = 8888;
+    public static final String serverIP = "localhost";
+
 
 
     public BaseGUI(String title,Socket socket) {
         super(title);
         this.socket = socket;
         try {
-            this.out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.objectOut = new ObjectOutputStream(socket.getOutputStream());
+            this.objectIn = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e);
         }

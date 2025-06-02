@@ -89,9 +89,13 @@ public class ClientGUI extends BaseGUI implements ActionListener {
         Object source = e.getSource();
         String chooseMenu = loginTextField.getText().toLowerCase();
         if (source == loginButton) {
-            out.println(chooseMenu);
             try {
-                String temp = in.readLine();
+                objectOut.writeObject(chooseMenu);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            }
+            try {
+                String temp = (String) objectIn.readObject();
                 if (temp != null) {
                     switch (temp) {
                         case "boss":
@@ -115,6 +119,8 @@ public class ClientGUI extends BaseGUI implements ActionListener {
                     }
                 }
             } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "ERROR");
+            } catch (ClassNotFoundException ex) {
                 JOptionPane.showMessageDialog(null, "ERROR");
             }
 

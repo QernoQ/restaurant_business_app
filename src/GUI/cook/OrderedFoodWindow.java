@@ -1,6 +1,8 @@
-package GUI.waiter;
+package GUI.cook;
 
-import GUI.WaiterGUI;
+import GUI.waiter.AddBillWindow;
+import GUI.waiter.CurrentBillWindow;
+import GUI.waiter.ManageBillWindow;
 import model.Bill;
 import model.Food;
 import model.SortEnum;
@@ -14,25 +16,28 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
-public class CurrentBillWindow extends JDialog {
+public class OrderedFoodWindow extends JDialog {
+
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
-    private WaiterGUI waiterGUI;
-    private JPanel mainPanel, buttonPanel;
-    private List<Food> foodList;
-    private List<Bill> billRecived;
-    private int foodID;
-    private AddBillWindow addBillWindow;
 
-    public CurrentBillWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
-        super(parent, "Add Bill", true);
+    private List<Bill> billRecived;
+
+    private List<Food> foodList;
+
+    private JPanel mainPanel;
+
+    private int foodID;
+
+
+    public OrderedFoodWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
+        super(parent, "Check ordered food", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
-        this.waiterGUI = (WaiterGUI) parent;
         init(parent);
     }
 
-    public void init(Window parent) {
+    void init(JFrame parent) {
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -40,39 +45,41 @@ public class CurrentBillWindow extends JDialog {
         mainPanel.setBackground(new Color(60, 60, 60));
 
         JScrollPane menuScroll = new JScrollPane(mainPanel);
-        menuScroll.setBorder(BorderFactory.createTitledBorder("Menu Items"));
+        menuScroll.setBorder(BorderFactory.createTitledBorder("Ordered Food"));
         setLocationRelativeTo(parent);
+
         addWindowListener(new WindowAdapter() {
             boolean active = false;
+
             public void windowOpened(WindowEvent e) {
                 try {
                     objectOut.writeObject(SortEnum.READBILL);
                     objectOut.flush();
                     billRecived = (List<Bill>) objectIn.readObject();
                     for (Bill bill : billRecived) {
-                        if(bill.isActive()) {
+                        if (bill.isActive()) {
                             addButton(bill);
                             active = true;
                         }
                     }
-                    if(!active) {
+                    if (!active) {
                         dispose();
-                        JOptionPane.showMessageDialog(CurrentBillWindow.this,"No active bills!");
+                        JOptionPane.showMessageDialog(OrderedFoodWindow.this, "No ordered Food!");
                     }
                     revalidate();
                     repaint();
                     pack();
                 } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(CurrentBillWindow.this, ex.getMessage());
+                    JOptionPane.showMessageDialog(OrderedFoodWindow.this, ex.getMessage());
                 }
             }
         });
-        add(mainPanel, BorderLayout.CENTER);
         setVisible(true);
+
     }
 
     public void addButton(Bill bill) {
-        JButton button = new JButton("Bill " + bill.getBillId());
+        JButton button = new JButton("Order " + bill.getBillId());
         button.setFont(new Font("Serif", Font.BOLD, 18));
         button.setBackground(new Color(50, 50, 50));
         button.setForeground(Color.WHITE);
@@ -81,28 +88,8 @@ public class CurrentBillWindow extends JDialog {
         button.setOpaque(true);
         button.setPreferredSize(new Dimension(200, 100));
         mainPanel.add(button);
-        button.addActionListener(e -> {
-            try {
-                objectOut.writeObject("TRY_LOCK_BILL");
-                objectOut.flush();
-                objectOut.writeInt(bill.getBillId());
-                objectOut.flush();
-                SortEnum response = (SortEnum) objectIn.readObject();
+        foodList = bill.getCurrentOrder();
+        foodID = bill.getBillId();
 
-                if(response == SortEnum.BILL_LOCK_SUCCESS) {
-                    foodList = bill.getCurrentOrder();
-                    foodID = bill.getBillId();
-                    new ManageBillWindow(this,waiterGUI,objectOut, objectIn, foodList, foodID,button,addBillWindow = new AddBillWindow(waiterGUI, objectOut, objectIn,false,true));
-                } else if(response == SortEnum.BILL_ALREADY_LOCKED) {
-                    JOptionPane.showMessageDialog(this, "This bill is currently being edited by another waiter.");
-                }
-            } catch (IOException | ClassNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, "Error while trying to open the bill: " + ex.getMessage());
-            }
-
-
-        });
     }
-
 }
-

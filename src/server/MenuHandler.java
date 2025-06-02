@@ -4,8 +4,8 @@ import java.io.*;
 import java.net.Socket;
 
 public class MenuHandler extends BaseHandler {
-    private BufferedReader in;
-    private PrintWriter out;
+    protected ObjectOutputStream objectOut;
+    protected ObjectInputStream objectIn;
 
     public MenuHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
@@ -13,30 +13,32 @@ public class MenuHandler extends BaseHandler {
 
     public void run() {
         try {
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+            this.objectOut = new ObjectOutputStream(socket.getOutputStream());
+            this.objectIn = new ObjectInputStream(socket.getInputStream());
 
             String chooseMenu;
 
-            while ((chooseMenu = in.readLine()) != null) {
+            while ((chooseMenu = (String) objectIn.readObject()) != null) {
                 chooseMenu = chooseMenu.toLowerCase();
                 switch (chooseMenu) {
                     case "boss":
                     case "manager":
                     case "waiter":
                     case "cook":
-                        out.println(chooseMenu);
+                        objectOut.writeObject(chooseMenu);
                         serverGUI.displayMessage(chooseMenu.toUpperCase() + " Menu has been selected by : " + socket.getInetAddress().getHostAddress());
                         new ClientHandler(socket, serverGUI).start();
                         return;
                     default:
-                        out.println("invalidLogin");
+                        objectOut.writeObject("invalidLogin");
                         serverGUI.displayMessage("Invalid login!");
                         break;
                 }
             }
 
         } catch (IOException e) {
+            serverGUI.displayMessage("[MENU HANDLER] " + e.getMessage());
+        } catch (ClassNotFoundException e) {
             serverGUI.displayMessage("[MENU HANDLER] " + e.getMessage());
         }
     }

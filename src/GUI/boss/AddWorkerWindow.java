@@ -2,7 +2,6 @@ package GUI.boss;
 
 import GUI.BossGUI;
 import model.*;
-import server.WindowManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,22 +9,51 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.Objects;
 
+/**
+ * Dialog window that allows the boss to add a new worker.
+ * Provides input fields for worker details and sends the data to the server.
+ */
 public class AddWorkerWindow extends JDialog implements ActionListener {
-    JButton addButton,closeButton;
-    JTextField nameField, surnameField, ageField;
+
+    /** Button to trigger adding the worker */
+    JButton addButton;
+
+    /** Text field for worker's first name */
+    JTextField nameField;
+
+    /** Text field for worker's last name */
+    JTextField surnameField;
+
+    /** Text field for worker's age */
+    JTextField ageField;
+
+    /** Dropdown for selecting the worker's position */
     JComboBox<PositionEnum> positionCombo;
 
+    /** Output stream to send objects to the server */
     private ObjectOutputStream objectOut;
+
+    /** Reference to the parent BossGUI for styling */
     private BossGUI bossGUI;
 
-    public AddWorkerWindow(BossGUI bossGUI,JFrame parent, ObjectOutputStream objectOut) {
+    /**
+     * Constructor that initializes the AddWorkerWindow.
+     *
+     * @param bossGUI   reference to the main BossGUI
+     * @param parent    parent frame for modal dialog positioning
+     * @param objectOut stream to send data to the server
+     */
+    public AddWorkerWindow(BossGUI bossGUI, JFrame parent, ObjectOutputStream objectOut) {
         super(parent, "Add Worker", true);
         this.bossGUI = bossGUI;
         this.objectOut = objectOut;
         init(parent);
     }
 
-
+    /**
+     * Initializes the window layout, components, styling, and event handling.
+     * @param parent the parent JFrame used for positioning
+     */
     public void init(JFrame parent) {
         setSize(800, 400);
         setLocationRelativeTo(parent);
@@ -108,6 +136,11 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
             handleAddWorker();
         }
     }
+
+    /**
+     * Collects and validates user input, creates a Worker object,
+     * and sends it to the server via objectOut.
+     */
     private void handleAddWorker() {
         try {
             String name = nameField.getText().trim();
@@ -152,13 +185,16 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
 
             JOptionPane.showMessageDialog(AddWorkerWindow.this, "Worker Added!");
 
-
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Please enter a valid number for age.");
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Something went wrong: " + ex.getMessage());
         }
     }
+
+    /**
+     * Clears all input fields in the form.
+     */
     public void clear() {
         nameField.setText("");
         surnameField.setText("");

@@ -10,14 +10,46 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * The `ClientHandler` class is responsible for managing communication with a single connected client.
+ * It extends `BaseHandler` and runs in its own thread to handle client requests concurrently.
+ * This class processes various commands related to worker management (add, save, remove) and bill management (add, read, close, back, remove items, add items).
+ * It also implements a locking mechanism for bills to prevent simultaneous editing by multiple waiters.
+ */
 public class ClientHandler extends BaseHandler {
+    /**
+     * Output stream to send objects to the client.
+     */
     private ObjectOutputStream objectOut;
+    /**
+     * Input stream to receive objects from the client.
+     */
     private ObjectInputStream objectIn;
+    /**
+     * Utility class for saving objects and lists to files.
+     */
     private SaveToFile saveToFile;
+    /**
+     * Utility class for reading objects and IDs from files.
+     */
     private ReadFromFile readFromFile;
+    /**
+     * A temporary `Bill` object used for processing bill-related commands.
+     */
     private Bill bill;
+    /**
+     * A static, concurrent map to keep track of currently locked bills.
+     * The key is the bill ID, and the value indicates if it's locked (`true`) or not.
+     */
     private static final Map<Integer, Boolean> lockedBills = new ConcurrentHashMap<>();
 
+    /**
+     * Constructs a new `ClientHandler`.
+     * Initializes object input/output streams and utility classes for file operations.
+     *
+     * @param socket    The `Socket` connected to the client.
+     * @param serverGUI A reference to the `ServerGUI` for displaying messages and logging.
+     */
     public ClientHandler(Socket socket, ServerGUI serverGUI) {
         super(socket, serverGUI);
         try {
@@ -30,6 +62,12 @@ public class ClientHandler extends BaseHandler {
         }
     }
 
+    /**
+     * The main execution method for the client handler thread.
+     * It continuously reads objects from the client, processes them based on their type (String command or `SortEnum`),
+     * and performs corresponding actions such as managing workers, bills, or locking resources.
+     * Handles disconnections and various exceptions gracefully.
+     */
     public void run() {
         try {
             while (true) {
@@ -205,6 +243,13 @@ public class ClientHandler extends BaseHandler {
             }
         }
     }
+    /**
+     * Saves or updates a `Bill` object in the list of bills stored on the server.
+     * It removes the old version of the bill (if present) and adds the updated one,
+     * then sorts the list by bill ID before saving.
+     *
+     * @param bills The current list of bills read from storage.
+     */
     public void saveBill(List<Bill> bills) {
         List<Bill> modifiableBills = new ArrayList<>(bills);
         modifiableBills.removeIf(b -> b.getBillId() == bill.getBillId());
@@ -213,6 +258,14 @@ public class ClientHandler extends BaseHandler {
         saveToFile.saveListToFile(modifiableBills,"bills.ser");
         serverGUI.displayMessage("[PERSON HANDLER] Bill save succesful!");
     }
+    /**
+     * Handles string-based commands received from the client.
+     * These commands typically control the state of shared GUI windows (like Add Worker or Manage Worker)
+     * or manage the locking of bills.
+     *
+     * @param cmd The string command received from the client.
+     * @throws IOException If an I/O error occurs during communication.
+     */
     private void handleStringCommand(String cmd) throws IOException {
         switch (cmd) {
             case "TRY_OPEN_ADD_WORKER" -> {

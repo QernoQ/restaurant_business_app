@@ -43,11 +43,11 @@ public class AddBillWindow extends JDialog implements ActionListener {
         init(parent);
     }
 
-    public void init(Window parent) {
+    public void init(JFrame parent) {
 
 
         setTitle("Add Bill");
-        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
 
@@ -198,15 +198,21 @@ public class AddBillWindow extends JDialog implements ActionListener {
 
     private void finishOrder() {
         try {
+            if(!currentOrder.isEmpty()) {
             objectOut.writeObject(SortEnum.ADDBILL);
             int id = (int) objectIn.readObject();
-            objectOut.writeObject(new Bill(true, currentOrder, id));
+            objectOut.writeObject(new Bill(true,true, currentOrder, id));
             JOptionPane.showMessageDialog(this, "Order finished! Total price: " + totalPrice + " $!");
+        } else {
+                JOptionPane.showMessageDialog(this, "Order is empty!");
+                dispose();
+            }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, e);
         } catch (ClassNotFoundException e) {
             JOptionPane.showMessageDialog(null, e);
         }
+
         dispose();
     }
 

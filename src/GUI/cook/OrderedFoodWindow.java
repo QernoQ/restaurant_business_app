@@ -1,10 +1,9 @@
 package GUI.cook;
 
-import GUI.waiter.AddBillWindow;
-import GUI.waiter.CurrentBillWindow;
-import GUI.waiter.ManageBillWindow;
+import GUI.CookGUI;
 import model.Bill;
 import model.Food;
+import model.FoodCategoryEnum;
 import model.SortEnum;
 
 import javax.swing.*;
@@ -25,15 +24,20 @@ public class OrderedFoodWindow extends JDialog {
 
     private List<Food> foodList;
 
+    private boolean alreadyClosed = false;
     private JPanel mainPanel;
 
     private int foodID;
+    private CookGUI CookGUI;
+
+    private Timer refreshTimer;
 
 
     public OrderedFoodWindow(JFrame parent, ObjectOutputStream objectOut, ObjectInputStream objectIn) {
         super(parent, "Check ordered food", true);
         this.objectOut = objectOut;
         this.objectIn = objectIn;
+        CookGUI = (CookGUI) parent;
         init(parent);
     }
 
@@ -49,31 +53,19 @@ public class OrderedFoodWindow extends JDialog {
         setLocationRelativeTo(parent);
 
         addWindowListener(new WindowAdapter() {
-            boolean active = false;
-
             public void windowOpened(WindowEvent e) {
-                try {
-                    objectOut.writeObject(SortEnum.READBILL);
-                    objectOut.flush();
-                    billRecived = (List<Bill>) objectIn.readObject();
-                    for (Bill bill : billRecived) {
-                        if (bill.isActive()) {
-                            addButton(bill);
-                            active = true;
-                        }
-                    }
-                    if (!active) {
-                        dispose();
-                        JOptionPane.showMessageDialog(OrderedFoodWindow.this, "No ordered Food!");
-                    }
-                    revalidate();
-                    repaint();
-                    pack();
-                } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(OrderedFoodWindow.this, ex.getMessage());
+                refreshOrders();
+                refreshTimer = new Timer(5000, evt -> refreshOrders());
+                refreshTimer.start();
+            }
+
+            public void windowClosing(WindowEvent e) {
+                if (refreshTimer != null) {
+                    refreshTimer.stop();
                 }
             }
         });
+        add(mainPanel, BorderLayout.CENTER);
         setVisible(true);
 
     }
@@ -88,8 +80,51 @@ public class OrderedFoodWindow extends JDialog {
         button.setOpaque(true);
         button.setPreferredSize(new Dimension(200, 100));
         mainPanel.add(button);
-        foodList = bill.getCurrentOrder();
-        foodID = bill.getBillId();
+        button.addActionListener(e -> {
+            foodList = bill.getCurrentOrder();
+            foodID = bill.getBillId();
+            new SeeOrderedFood(this, CookGUI, objectOut, objectIn, foodList, foodID, button);
+        });
+    }
 
+    private void refreshOrders() {
+        if (alreadyClosed) return;
+        mainPanel.removeAll();
+        boolean active = false;
+
+        try {
+            objectOut.writeObject(SortEnum.READBILL);
+            objectOut.flush();
+            billRecived = (List<Bill>) objectIn.readObject();
+
+            for (Bill bill : billRecived) {
+                if (bill.isDone()) {
+                    List<Food> filteredFood = bill.getCurrentOrder().stream()
+                            .filter(f -> !(f.getCategory().equals(FoodCategoryEnum.HOT_DRINKS) ||
+                                    f.getCategory().equals(FoodCategoryEnum.COLD_DRINKS) ||
+                                    f.getCategory().equals(FoodCategoryEnum.BEER)))
+                            .toList();
+
+                    if (!filteredFood.isEmpty()) {
+                        addButton(bill);
+                        active = true;
+                    }
+                }
+            }
+
+            if (!active) {
+                alreadyClosed = true;
+                if (refreshTimer != null) refreshTimer.stop();
+                dispose();
+                JOptionPane.showMessageDialog(OrderedFoodWindow.this, "No ordered Food!");
+            }
+
+            revalidate();
+            repaint();
+            pack();
+
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Error updating orders: " + ex.getMessage());
+        }
     }
 }

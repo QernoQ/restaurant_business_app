@@ -23,24 +23,21 @@ public class ManageBillWindow extends JDialog implements ActionListener {
     private int billID;
     private JButton billButton;
 
-    private Window rootParent;
     private AddBillWindow addBillWindow;
 
-    public ManageBillWindow(Window parent,WaiterGUI waiterGUI, ObjectOutputStream objectOut, ObjectInputStream objectIn, List<Food> foodList, int billID,JButton button,AddBillWindow addBillWindow) {
+    public ManageBillWindow(JDialog parent, WaiterGUI waiterGUI, ObjectOutputStream objectOut, ObjectInputStream objectIn, List<Food> foodList, int billID, JButton button, AddBillWindow addBillWindow) {
         super(parent, "Manage Bill", ModalityType.APPLICATION_MODAL);
         this.waiterGUI = waiterGUI;
         this.objectOut = objectOut;
-        this.rootParent = parent;
         this.objectIn = objectIn;
         this.foodList = foodList;
         this.billID = billID;
         this.billButton = button;
         this.addBillWindow = addBillWindow;
-        init();
+        init(parent);
     }
 
-    private void init() {
-        setTitle("Manage Bill");
+    private void init(JDialog parent) {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setLayout(new BorderLayout());
         setResizable(false);
@@ -84,7 +81,7 @@ public class ManageBillWindow extends JDialog implements ActionListener {
         }
 
         pack();
-        setLocationRelativeTo(getParent());
+        setLocationRelativeTo(parent);
         setVisible(true);
     }
 
@@ -119,7 +116,14 @@ public class ManageBillWindow extends JDialog implements ActionListener {
             foodList.add(f);
             addItem(f);
         }
-
+        try {
+            objectOut.writeObject(SortEnum.ADDITEMSAVE);
+            objectOut.flush();
+            objectOut.writeObject(new Bill(true, true, foodList, billID));
+            objectOut.flush();
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(this, "Something went wrong while adding a bill.");
+        }
         foodListPanel.revalidate();
         foodListPanel.repaint();
         pack();
@@ -132,7 +136,7 @@ public class ManageBillWindow extends JDialog implements ActionListener {
             if (source == closeButton) {
                 objectOut.writeObject(SortEnum.CLOSEBILL);
                 objectOut.flush();
-                objectOut.writeObject(new Bill(false, foodList, billID));
+                objectOut.writeObject(new Bill(false, false, foodList, billID));
                 objectOut.flush();
                 if (billButton != null) {
                     Container parent = billButton.getParent();
@@ -147,7 +151,7 @@ public class ManageBillWindow extends JDialog implements ActionListener {
             } else if (source == backButton) {
                 objectOut.writeObject(SortEnum.BACKBILL);
                 objectOut.flush();
-                objectOut.writeObject(new Bill(true, foodList, billID));
+                objectOut.writeObject(new Bill(true, true, foodList, billID));
                 objectOut.flush();
                 check();
 

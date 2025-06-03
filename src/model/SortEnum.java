@@ -16,6 +16,8 @@ public enum SortEnum {
     BILL_CLOSED,
     BILL_ALREADY_LOCKED,
     BILL_LOCK_SUCCESS,
+    REMOVEORDER,
+    ADDITEMSAVE,
 
 
 

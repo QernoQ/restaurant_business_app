@@ -172,6 +172,19 @@ public class ClientHandler extends BaseHandler {
                         lockedBills.remove(billId);
                         serverGUI.displayMessage("Bill: " + billId  + " has been unlocked.");
                     }
+                    case REMOVEORDER ->
+                    {
+                        serverGUI.displayMessage("[PERSON HANDLER] REMOVEBILL received from client.");
+                        bill = (Bill) objectIn.readObject();
+                        saveBill(readBill);
+                    }
+                    case ADDITEMSAVE ->
+                    {
+                        serverGUI.displayMessage("[PERSON HANDLER] ADDITEMSAVE received from client.");
+                        bill = (Bill) objectIn.readObject();
+                        saveBill(readBill);
+                    }
+
                     default -> serverGUI.displayMessage("[PERSON HANDLER] Unknown sort command: " + sort);
                 }
 

@@ -1,6 +1,7 @@
 package GUI.waiter;
 
 import GUI.WaiterGUI;
+import GUI.cook.OrderedFoodWindow;
 import model.Bill;
 import model.Food;
 import model.SortEnum;
@@ -14,7 +15,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
 
+
 public class CurrentBillWindow extends JDialog {
+    private Timer refreshTimer;
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
     private WaiterGUI waiterGUI;
@@ -43,27 +46,15 @@ public class CurrentBillWindow extends JDialog {
         menuScroll.setBorder(BorderFactory.createTitledBorder("Menu Items"));
         setLocationRelativeTo(parent);
         addWindowListener(new WindowAdapter() {
-            boolean active = false;
             public void windowOpened(WindowEvent e) {
-                try {
-                    objectOut.writeObject(SortEnum.READBILL);
-                    objectOut.flush();
-                    billRecived = (List<Bill>) objectIn.readObject();
-                    for (Bill bill : billRecived) {
-                        if(bill.isActive()) {
-                            addButton(bill);
-                            active = true;
-                        }
-                    }
-                    if(!active) {
-                        dispose();
-                        JOptionPane.showMessageDialog(CurrentBillWindow.this,"No active bills!");
-                    }
-                    revalidate();
-                    repaint();
-                    pack();
-                } catch (IOException | ClassNotFoundException ex) {
-                    JOptionPane.showMessageDialog(CurrentBillWindow.this, ex.getMessage());
+                refreshOrders(); // na start
+                refreshTimer = new Timer(5000, evt -> refreshOrders()); // co 5 sek
+                refreshTimer.start();
+            }
+
+            public void windowClosing(WindowEvent e) {
+                if (refreshTimer != null) {
+                    refreshTimer.stop();
                 }
             }
         });
@@ -103,6 +94,36 @@ public class CurrentBillWindow extends JDialog {
 
         });
     }
+    private void refreshOrders() {
+        mainPanel.removeAll();
+        boolean active = false;
 
+        try {
+            objectOut.writeObject(SortEnum.READBILL);
+            objectOut.flush();
+            billRecived = (List<Bill>) objectIn.readObject();
+
+            for (Bill bill : billRecived) {
+                if (bill.isActive()) {
+                    addButton(bill);
+                    active = true;
+                }
+            }
+
+            if (!active) {
+                dispose();
+                JOptionPane.showMessageDialog(CurrentBillWindow.this, "No active bills!");
+            }
+
+            mainPanel.revalidate();
+            mainPanel.repaint();
+            pack();
+
+        } catch (IOException | ClassNotFoundException ex) {
+            JOptionPane.showMessageDialog(this, "Error updating bills: " + ex.getMessage());
+        }
+    }
 }
+
+
 

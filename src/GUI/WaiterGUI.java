@@ -12,7 +12,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `WaiterGUI` class represents the main graphical user interface for waiters.
  * It extends `BaseGUI` and provides options for adding new bills, viewing current active bills,

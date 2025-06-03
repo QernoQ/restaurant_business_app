@@ -9,6 +9,9 @@ import java.net.Socket;
  * and, upon successful validation, delegates further communication to a `ClientHandler`.
  * This handler runs in its own thread to manage concurrent client connections.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class MenuHandler extends BaseHandler {
     /**
      * Output stream to send objects (like login responses) to the client.

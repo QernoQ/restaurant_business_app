@@ -11,7 +11,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `CurrentBillWindow` class represents a JDialog window that displays all currently active bills.
  * It allows waiters to view and manage these bills, including editing them.

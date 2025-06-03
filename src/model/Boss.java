@@ -1,5 +1,7 @@
 package model;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `Boss` class represents an employee with the position of a boss within the restaurant system.
  * It extends the `Person` class, inheriting basic personal information.

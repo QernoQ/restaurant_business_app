@@ -8,7 +8,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.Objects;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * Dialog window that allows the boss to add a new worker.
  * Provides input fields for worker details and sends the data to the server.

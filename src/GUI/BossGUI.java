@@ -10,7 +10,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
 import java.net.Socket;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `BossGUI` class represents the main graphical user interface for the boss.
  * It extends `BaseGUI` and provides options for adding and managing workers.

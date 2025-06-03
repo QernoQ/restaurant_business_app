@@ -11,7 +11,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `SeeOrderedFood` class represents a JDialog window for cooks to view the details
  * of a specific food order and mark it as completed.

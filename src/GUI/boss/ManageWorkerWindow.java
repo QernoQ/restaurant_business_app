@@ -8,7 +8,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `ManageWorkerWindow` class represents a JDialog window for managing worker information.
  * It allows the boss to view, edit, remove, and sort workers (bosses, cooks, waiters).

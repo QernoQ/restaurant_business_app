@@ -12,6 +12,9 @@ import java.util.ArrayList;
  * It handles saving individual objects, lists of objects, and unique ID counters.
  * This class is crucial for maintaining the state of workers and bills across server restarts.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class SaveToFile implements Serializable {
 
     /**

@@ -14,7 +14,9 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `AddBillWindow` class represents a JDialog window where a waiter can create and manage a new bill.
  * It displays menu items, allows adding/removing items from the order, and finalizing the bill.

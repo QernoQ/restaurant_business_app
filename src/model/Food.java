@@ -2,7 +2,9 @@ package model;
 
 
 import java.io.Serializable;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `Food` class represents a single food or drink item available in the restaurant menu.
  * It stores details such as the item's name, price, and its category.

@@ -2,7 +2,9 @@ package model;
 
 import javax.swing.text.Position;
 import java.io.Serializable;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `Person` class serves as a base class for all individuals within the restaurant management system.
  * It encapsulates common personal information such as name, surname, age, a unique identifier,

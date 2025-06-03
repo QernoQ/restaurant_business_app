@@ -1,11 +1,13 @@
 package client;
 
-import GUI.BossGUI;
 import GUI.ClientGUI;
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.Socket;
+/**
+ * @author Patryk Bocheński
+ */
 
 /**
  * The {@code RestaurantClient} class represents the client-side component

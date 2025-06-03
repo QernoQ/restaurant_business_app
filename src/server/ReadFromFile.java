@@ -12,6 +12,9 @@ import java.util.List;
  * and simple ID values from files on the server side. It's used by handlers
  * to retrieve persistent data like worker lists, bills, and unique ID counters.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class ReadFromFile implements Serializable {
     /**
      * The socket associated with the client connection. This field is declared

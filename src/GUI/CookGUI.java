@@ -8,7 +8,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.Socket;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `CookGUI` class represents the main graphical user interface for the cook.
  * It extends `BaseGUI` and provides options for viewing ordered food items.

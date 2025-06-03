@@ -1,5 +1,7 @@
 package model;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `Cook` class represents an employee with the position of a cook within the restaurant system.
  * It extends the `Person` class, inheriting basic personal information such as name, surname, age, and ID.

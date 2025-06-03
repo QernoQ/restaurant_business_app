@@ -8,6 +8,9 @@ import java.net.Socket;
  * is intended to manage communication with a single connected client.
  * It extends `Thread` to allow concurrent handling of multiple clients.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class BaseHandler extends Thread {
     /**
      * The `Socket` connected to the client that this handler will manage.

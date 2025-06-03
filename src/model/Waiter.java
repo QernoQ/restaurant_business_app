@@ -4,6 +4,9 @@ package model;
  * The `Waiter` class represents an employee with the position of a waiter within the restaurant system.
  * It extends the `Person` class, inheriting basic personal information.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class Waiter extends Person {
     /**
      * Constructs a new `Waiter` object.

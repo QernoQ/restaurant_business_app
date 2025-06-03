@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `ManageBillWindow` class provides a JDialog for waiters to manage an existing bill.
  * This includes viewing ordered items, removing items, adding new items, and closing the bill.

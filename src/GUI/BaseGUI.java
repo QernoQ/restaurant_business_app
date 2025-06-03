@@ -4,7 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.Socket;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `BaseGUI` abstract class serves as a foundational class for all GUI windows in the application.
  * It provides common properties and methods for network communication (sockets, object streams)

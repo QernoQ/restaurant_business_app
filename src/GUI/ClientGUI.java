@@ -7,7 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.Socket;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `ClientGUI` class represents the main login window for the client application.
  * It extends `BaseGUI` and provides a user interface for entering login credentials

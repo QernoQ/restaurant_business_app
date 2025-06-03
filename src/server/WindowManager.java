@@ -8,6 +8,9 @@ package server;
  * any connected client, preventing potential conflicts or multiple simultaneous edits.
  * This is achieved through static synchronized methods, making it thread-safe.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class WindowManager {
     /**
      * A static boolean flag indicating whether the "Add Worker" window is currently open.
@@ -53,6 +56,7 @@ public class WindowManager {
      * @return `true` if the window was successfully opened (i.e., it was not already open),
      * `false` otherwise (if the window is already open).
      */
+
     public static synchronized boolean tryOpenManageWorker() {
         if (!manageWorkerOpen) {
             manageWorkerOpen = true;

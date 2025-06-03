@@ -16,6 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * This class processes various commands related to worker management (add, save, remove) and bill management (add, read, close, back, remove items, add items).
  * It also implements a locking mechanism for bills to prevent simultaneous editing by multiple waiters.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class ClientHandler extends BaseHandler {
     /**
      * Output stream to send objects to the client.

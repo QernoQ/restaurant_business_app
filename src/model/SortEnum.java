@@ -6,6 +6,9 @@ package model;
  * particularly between client GUIs and the server.
  * These values dictate actions to be performed or states to be communicated.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public enum SortEnum {
     /**
      * Represents a command to add a new entity (worker)

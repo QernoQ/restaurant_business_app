@@ -11,7 +11,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `OrderedFoodWindow` class represents a JDialog window for cooks to view and manage
  * incoming food orders. It displays active food orders and allows the cook to interact with them.

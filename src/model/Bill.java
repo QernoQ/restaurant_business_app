@@ -2,7 +2,9 @@ package model;
 
 import java.io.Serializable;
 import java.util.List;
-
+/**
+ * @author Patryk Bocheński
+ */
 /**
  * The `Bill` class represents a customer's order in the restaurant system.
  * It encapsulates the state of an order, including its items, unique identifier,

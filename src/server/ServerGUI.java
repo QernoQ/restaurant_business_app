@@ -16,6 +16,9 @@ import java.time.format.DateTimeFormatter;
  * representation of server activity and operations. All displayed messages are also
  * saved to a log file.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class ServerGUI extends JFrame {
     /**
      * The `JTextArea` component used to display server messages and logs.

@@ -6,6 +6,9 @@ package model;
  * This ensures consistency and simplifies role-based access control or
  * functionality within the application.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public enum PositionEnum {
     /**
      * Represents the management role with the highest level of authority.

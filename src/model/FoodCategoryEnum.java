@@ -5,6 +5,9 @@ package model;
  * available in the restaurant's menu. This helps in organizing menu items
  * and can be used for filtering or displaying different sections of the menu.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public enum FoodCategoryEnum {
 
     DESSERTS,

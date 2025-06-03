@@ -14,6 +14,9 @@ import java.net.Socket;
  * and continuously listens for incoming client connections, delegating each new
  * connection to a `MenuHandler` for initial processing.
  */
+/**
+ * @author Patryk Bocheński
+ */
 public class RestaurantServer {
     /**
      * The port number on which the server listens for incoming client connections.

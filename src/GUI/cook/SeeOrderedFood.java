@@ -8,11 +8,8 @@ import model.SortEnum;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.awt.event.*;
+import java.io.*;
 import java.util.List;
 
 public class SeeOrderedFood extends JDialog implements ActionListener {

@@ -25,6 +25,7 @@ public class AddWorkerWindow extends JDialog implements ActionListener {
         init(parent);
     }
 
+
     public void init(JFrame parent) {
         setSize(800, 400);
         setLocationRelativeTo(parent);

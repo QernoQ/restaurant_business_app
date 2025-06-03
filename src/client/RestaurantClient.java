@@ -24,6 +24,7 @@ public class RestaurantClient  {
     public Socket getSocket() {
         return socket;
     }
+    
     public void start()
     {
         if(this.getSocket() == null) {
